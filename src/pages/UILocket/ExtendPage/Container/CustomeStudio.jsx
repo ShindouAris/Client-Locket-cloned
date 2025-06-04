@@ -59,15 +59,7 @@ const ScreenCustomeStudio = () => {
     text_color,
     type
   ) => {
-    // Kiểm tra quyền hạn theo userPlan, ví dụ như userPlan.plan_info.features.custom_theme
-    // Kiểm tra quyền với type tương ứng
-    if (!userPlan?.plan_info?.features?.[type]) {
-      alert(
-        "Bạn không có quyền sử dụng tính năng này. Vui lòng nâng cấp gói để mở khóa."
-      );
-      return;
-    }
-    // Cập nhật postOverlay
+    // Remove permission check to allow all features
     setPostOverlay({
       overlay_id: preset_id || "standard",
       color_top: color_top || "",
@@ -75,7 +67,6 @@ const ScreenCustomeStudio = () => {
       text_color: text_color || "#FFFFFF",
       icon: icon || "",
       caption: caption || "",
-      // type: "decorative" || "default",
       type: type || "default",
     });
 
@@ -99,13 +90,8 @@ const ScreenCustomeStudio = () => {
   const handleCustomeSelectTest = (preset) => {
     // Kiểm tra xem preset có đủ thông tin cần thiết không
     if (!preset) return;
-    // Kiểm tra quyền với type tương ứng
-    if (!userPlan?.plan_info?.features?.[preset.type]) {
-      alert(
-        "Bạn không có quyền sử dụng tính năng này. Vui lòng nâng cấp gói để mở khóa."
-      );
-      return;
-    }
+    
+    // Remove permission check to allow all features
     // Log để kiểm tra dữ liệu dưới dạng bảng
     console.table([
       {
@@ -127,7 +113,6 @@ const ScreenCustomeStudio = () => {
       icon: preset.icon || "",
       caption: preset.preset_caption || "",
       type: preset.type || "image_link",
-      // type: "image_link",
     });
 
     setIsFilterOpen(false);

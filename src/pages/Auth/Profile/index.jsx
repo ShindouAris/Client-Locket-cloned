@@ -150,7 +150,7 @@ export default function Profile() {
       <h1 className="text-3xl font-bold pb-6">
         Chào mừng, "
         <span className="">
-          {user?.firstName} {user?.lastName}
+          {user.displayName}
         </span>
         " đến với tài khoản của bạn!
       </h1>
@@ -179,7 +179,7 @@ export default function Profile() {
             {user?.firstName} {user?.lastName}
           </h2>
           <p className="font-semibold">{user?.email || "Không có email"}</p>
-          <a
+          <a  
             href={`https://locket.cam/${user?.username}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -194,7 +194,7 @@ export default function Profile() {
       <div className="mt-6 bg-base-100 border-base-300 text-base-content p-6 rounded-lg shadow-md w-full max-w-2xl">
         <h2 className="text-xl font-semibold pb-2">Thông tin tài khoản:</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-1 rounded-md p-3 card-body">
-          <InfoRow label="UID" value={user?.uid} />
+          <InfoRow label="UID" value={user.localId} />
           <InfoRow label="Email" value={user?.email} />
           <InfoRow label="Username" value={user?.username} />
           <InfoRow label="Tên hiển thị" value={user?.displayName} />

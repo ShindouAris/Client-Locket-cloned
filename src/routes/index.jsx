@@ -1,8 +1,8 @@
 import AboutMe from "../pages/Auth/AboutMe";
 import AuthHome from "../pages/Auth/Home";
-import ToolsLocket from "../pages/Auth/LocketDioTools";
 import PostMoments from "../pages/Auth/PostMoments";
 import Profile from "../pages/Auth/Profile";
+import SettingsPage from "../pages/Auth/Settings";
 import AboutLocketDio from "../pages/Public/About";
 import Contact from "../pages/Public/Contact";
 import Docs from "../pages/Public/Docs";
@@ -29,7 +29,6 @@ const publicRoutes = [
   { path: "/privacy", component: PrivacyPolicy, title: `${APP_NAME} | Privacy Policy for LocketDio - PrivacyPolicies.com` },
   { path: "/testv1", component: CameraCapture, title: `${APP_NAME} | Test` },
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
-  { path: "/locketdio-tools", component: ToolsLocket, title: `${APP_NAME} | Công cụ mở rộng` },
   // { path: "/testv2", component: Docs, title: `${APP_NAME} | Đăng Moment Mới` },
 ];
 
@@ -40,13 +39,12 @@ const authRoutes = [
   { path: "/postmoments", component: PostMoments, title: `${APP_NAME} | Đăng Moment Mới` },
   { path: "/test", component: CameraCapture, title: `${APP_NAME} | Đăng Video Mới` },
   { path: "/timeline", component: Timeline, title: `${APP_NAME} | Dòng Thời Gian` },
-  { path: "/aboutdio", component: AboutMe, title: `${APP_NAME} | Về Dio` },
+  { path: "/aboutdio", component: AboutMe, title: `${APP_NAME} | Về tôi` },
   { path: "/docs", component: Docs, title: `${APP_NAME} | Docs` },
   { path: "/donatehistory", component: DonateHistory, title: `${APP_NAME} | DonateHistory` },
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
-
   { path: "/locket", component: CameraCapture, title: `${APP_NAME} | Locket` },
-  { path: "/locketdio-tools", component: ToolsLocket, title: `${APP_NAME} | Công cụ mở rộng` },
+  { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
 ];
 
 // 📌 Các route dành cho locket

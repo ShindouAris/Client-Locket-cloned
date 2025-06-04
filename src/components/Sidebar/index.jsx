@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   History,
   Wrench,
+  Settings2,
 } from "lucide-react";
 import { showToast } from "../Toast";
 import * as ultils from "../../utils";
@@ -194,15 +195,15 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <Link
-                    to="/locketdio-tools"
+                    to="/settings"
                     className={`flex items-center px-3 py-3 rounded-lg transition ${
-                      location.pathname === "/locketdio-tools"
+                      location.pathname === "/settings"
                         ? "bg-base-300"
                         : "hover:bg-base-200"
                     }`}
                     onClick={() => setIsSidebarOpen(false)}
                   >
-                    <Wrench size={22} /> Công cụ Locket <div className="badge badge-sm badge-secondary">Hot</div>
+                    <Settings2 size={22} /> Cài đặt
                   </Link>
                 </li>
                 <li>
@@ -270,7 +271,7 @@ const Sidebar = () => {
                     }`}
                     onClick={() => setIsSidebarOpen(false)}
                   >
-                    <Briefcase size={22} /> Giới thiệu Dio
+                    <Briefcase size={22} /> Giới thiệu 
                   </Link>
                 </li>
 

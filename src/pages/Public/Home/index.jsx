@@ -3,10 +3,9 @@ import "./styles.css";
 import { Link } from "react-router-dom";
 
 const words = [
-  "Welcome to Locket Dio! 🚀",
+  "Welcome to Locket Kanade! 🚀",
   "Tuỳ chỉnh theo sở thích! ✨",
-  "Tính năng chất chơi! 🔥",
-  "Khám phá & trải nghiệm! 🌍",
+  "Crack bởi Kanade! 🔥"
 ];
 
 const Home = () => {

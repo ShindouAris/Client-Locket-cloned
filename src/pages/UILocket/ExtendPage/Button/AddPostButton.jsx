@@ -66,12 +66,6 @@ const AddPostButton = () => {
   };
 
   const toggleForm = () => {
-    if (!userPlan?.plan_info?.features?.create_post) {
-      alert(
-        "Bạn không có quyền sử dụng tính năng này. Vui lòng nâng cấp gói thành viên để mở khóa."
-      );
-      return;
-    }
     setShowForm(true);
   };
 

@@ -129,7 +129,7 @@ export const createRequestPayloadV4 = async (
   selectedRecipients
 ) => {
   try {
-    // Đợi lấy token & uid
+    // Get token & uid
     const auth = await getCurrentUserTokenAndUid();
 
     if (!auth) {
@@ -139,11 +139,14 @@ export const createRequestPayloadV4 = async (
 
     const { idToken, localId, refreshToken } = auth;
 
-    // Upload file & chuẩn bị thông tin media
+    // Upload file & prepare media info
     const fileData = await uploadToCloudinary(selectedFile, previewType);
     const mediaInfo = prepareMediaInfo(fileData);
 
-    // Chuẩn bị dữ liệu tùy chọn (caption, overlay, v.v.)
+    // Add the original file to mediaInfo
+    mediaInfo.file = selectedFile;
+
+    // Prepare options data
     const optionsData = {
       caption: postOverlay.caption,
       overlay_id: postOverlay.overlay_id,
@@ -152,11 +155,11 @@ export const createRequestPayloadV4 = async (
       text_color: postOverlay.text_color,
       color_top: postOverlay.color_top,
       color_bottom: postOverlay.color_bottom,
-      audience, // Gắn audience vào options luôn
+      audience,
       recipients: audience === "selected" ? selectedRecipients : [],
     };
 
-    // Tạo payload cuối cùng
+    // Create final payload
     const payload = {
       userData: { idToken: idToken, localId },
       options: optionsData,

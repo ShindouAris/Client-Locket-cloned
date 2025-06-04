@@ -4,7 +4,6 @@ import ThemeSelector from "../../../components/Theme/ThemeSelector";
 import MockupiPhone from "../../../components/UI/MockupiPhone";
 
 const AuthHome = () => {
-  const [iframeUrl] = useState("https://locket-dio.web.app");
 
   return (
     <div className="flex flex-col items-center justify-center py-6 bg-base-200 px-6">
@@ -58,7 +57,7 @@ const AuthHome = () => {
         <div className="p-6 bg-base-100 shadow-lg rounded-xl text-center">
           <h2 className="text-xl font-semibold mb-3">🔒 Bảo mật an toàn</h2>
           <p className="text-base-content">
-            Dữ liệu của bạn được bảo vệ với công nghệ tiên tiến.
+            Dữ liệu của bạn được bảo vệ với công nghệ tiên tiến....? BE cũ k public lmao
           </p>
         </div>
       </div>

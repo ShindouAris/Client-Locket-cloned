@@ -12,63 +12,71 @@ const plans = [
     name: "Free",
     price: 0,
     duration_days: 0,
-    max_uploads: 10,
-    storage_limit: 50, // MB
+    max_uploads: 999999,
+    storage_limit: 999999, // MB
     perks: {
-      "Đăng tối đa 15 ảnh/video": true,
-      "Tuỳ chỉnh nền và trang trí cơ bản": true,
-      "Không hỗ trợ tuỳ chỉnh nâng cao": false,
-      "Không hỗ trợ ưu tiên": false,
+      "Đăng không giới hạn ảnh/video": true,
+      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
+      "Hỗ trợ tuỳ chỉnh nâng cao": true,
+      "Hỗ trợ ưu tiên": true,
+      "Truy cập tính năng mới sớm hơn": true,
+      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
+      "Hỗ trợ ưu tiên 24/7": true,
+      "Quà tặng và ưu đãi đặc biệt": true,
     },
   },
   {
     id: "pro",
     name: "Pro",
-    price: 19000,
+    price: 1,
     duration_days: 30,
-    max_uploads: 20,
-    storage_limit: 500, // MB
+    max_uploads: 999999,
+    storage_limit: 999999, // MB
     perks: {
-      "Không giới hạn đăng ảnh/video": true,
-      "Huy hiệu thành viên": true,
-      "Tuỳ chỉnh nền, trang trí & icon hình ảnh": true,
+      "Đăng không giới hạn ảnh/video": true,
+      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
       "Hỗ trợ tuỳ chỉnh nâng cao": true,
-      "Hỗ trợ ưu tiên qua email": true,
+      "Hỗ trợ ưu tiên": true,
       "Truy cập tính năng mới sớm hơn": true,
+      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
+      "Hỗ trợ ưu tiên 24/7": true,
+      "Quà tặng và ưu đãi đặc biệt": true,
     },
   },
   {
     id: "premium",
     name: "Premium",
-    price: 49000,
+    price: 1,
     duration_days: 30,
-    max_uploads: 50,
-    storage_limit: 2000, // MB
+    max_uploads: 999999,
+    storage_limit: 999999, // MB
     perks: {
-      "Không giới hạn đăng ảnh/video": true,
-      "Huy hiệu thành viên": true,
-      "Tuỳ chỉnh đầy đủ: nền, trang trí, icon & màu sắc": true,
+      "Đăng không giới hạn ảnh/video": true,
+      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
       "Hỗ trợ tuỳ chỉnh nâng cao": true,
-      "Hỗ trợ ưu tiên qua email và chat": true,
-      "Phát hành tính năng mới hằng tháng": true,
+      "Hỗ trợ ưu tiên": true,
       "Truy cập tính năng mới sớm hơn": true,
+      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
+      "Hỗ trợ ưu tiên 24/7": true,
+      "Quà tặng và ưu đãi đặc biệt": true,
     },
   },
   {
     id: "pro_plus",
     name: "Pro Plus",
-    price: 199000,
+    price: 1,
     duration_days: 365,
-    max_uploads: 100,
-    storage_limit: 5000, // MB
+    max_uploads: 999999,
+    storage_limit: 999999, // MB
     perks: {
-      "Toàn bộ tính năng Pro": true,
-      "Không giới hạn đăng ảnh/video": true,
-      "Huy hiệu thành viên": true,
+      "Đăng không giới hạn ảnh/video": true,
+      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
+      "Hỗ trợ tuỳ chỉnh nâng cao": true,
+      "Hỗ trợ ưu tiên": true,
+      "Truy cập tính năng mới sớm hơn": true,
       "Toàn quyền tuỳ chỉnh mọi tính năng": true,
       "Hỗ trợ ưu tiên 24/7": true,
       "Quà tặng và ưu đãi đặc biệt": true,
-      "Phát hành tính năng mới hằng tháng": true,
     },
   },
 ];
@@ -162,7 +170,7 @@ export default function RegisterMemberPage() {
     <div className="min-h-screen bg-pink-50 py-6 px-4">
       <div className="h-16"></div>
       <h1 className="text-3xl font-bold text-center text-base-content">
-        Đăng ký thành viên Locket Dio
+        Đăng ký thành viên Locket Kanade
       </h1>
       <div className="text-sm max-w-md mx-auto">
         {/* Nút toggle */}
@@ -189,7 +197,7 @@ export default function RegisterMemberPage() {
         >
           <div className="bg-base-100 border-2 border-dashed rounded-lg p-4 text-justify shadow mt-3">
             <p>
-              Gói thành viên <strong>Locket Dio</strong> đem đến trải nghiệm đầy
+              Gói thành viên <strong>Locket Kanade</strong> đem đến trải nghiệm đầy
               đủ: đăng ảnh, video, tùy chỉnh theme, cùng nhiều tiện ích độc
               quyền.
             </p>
@@ -199,7 +207,7 @@ export default function RegisterMemberPage() {
               năng mới nhằm phục vụ cộng đồng tốt hơn.
             </p>
             <p className="mt-2 italic text-gray-500">
-              Cảm ơn bạn đã đồng hành và ủng hộ Locket Dio! 💖
+              Cảm ơn bạn đã đồng hành và ủng hộ Locket Kanade! 💖
             </p>
           </div>
         </div>
@@ -234,7 +242,7 @@ export default function RegisterMemberPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🙍‍♂️</span>
                   <span className="font-medium text-gray-600">Tên:</span>
-                  <span className="text-gray-800">{userPlan.display_name}</span>
+                  <span className="text-gray-800">{user.displayName}</span>
                 </div>
 
                 <div className="flex items-center gap-2">

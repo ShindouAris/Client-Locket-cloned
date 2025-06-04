@@ -5,16 +5,17 @@ const Docs = () => {
     <div className="min-h-screen px-4 flex flex-col items-center py-5">
       <div className="h-16"></div>
       <h1 className="text-3xl font-semibold mb-5">
-        Hướng Dẫn Sử Dụng Trang Web Locket Dio by Dio
+        <del>Hướng Dẫn Sử Dụng Trang Web Locket Dio by Dio</del><br/>
+        <span className="text-red-500">Lưu ý: các tính năng crack vẫn chưa xong hoàn toàn / lỗi</span>
       </h1>
 
       <div className="max-w-3xl text-left mb-12">
         {/* Giới Thiệu */}
         <h2 className="text-2xl font-semibold mt-4">
-          1. Giới Thiệu Về Locket Dio
+          1. Giới Thiệu Về Locket Kanade
         </h2>
         <p className="text-sm leading-relaxed">
-          Locket Dio là nền tảng WebApp giúp bạn dễ dàng tải lên, lưu trữ và
+          Locket K là nền tảng WebApp giúp bạn dễ dàng tải lên, lưu trữ và
           chia sẻ ảnh, video với phong cách riêng biệt qua các caption tùy
           chỉnh. Chúng tôi cam kết mang đến cho bạn trải nghiệm quản lý nội dung
           thuận tiện, bảo mật và tối ưu nhất trên web.

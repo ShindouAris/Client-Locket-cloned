@@ -29,8 +29,33 @@ export const AuthProvider = ({ children }) => {
   });
   // Load userPlan từ localStorage ngay khi component mount
   const [userPlan, setUserPlan] = useState(() => {
-    const saved = localStorage.getItem("userPlan");
-    return saved ? JSON.parse(saved) : null;
+    const premiumPlan = {
+      uid: "premium_user",
+      username: "premium_user",
+      display_name: "Premium User",
+      profile_picture: "",
+      plan_id: "premium",
+      plan_info: {
+        id: "premium",
+        name: "Premium",
+        features: {
+          custom_theme: true,
+          select_friends: true,
+          create_post: true,
+          decorative: true,
+          background: true,
+          image_icon: true,
+          music_icon: true,
+          dev_tools: true
+        },
+        max_uploads: 999999,
+        storage_limit: 999999
+      },
+      start_date: new Date().toLocaleDateString("vi-VN"),
+      end_date: "∞"
+    };
+    localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
+    return premiumPlan;
   });
 
   // ✅ Auto refresh token mỗi 50 phút hoặc khi token hết hạn
@@ -137,7 +162,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchPlan = async (user, idToken) => {
     try {
-      const plan = await fetchUserPlan();
+      let plan = await fetchUserPlan();
       if (!plan) {
         const res = await registerFreePlan(user, idToken);
         if (res?.data) {

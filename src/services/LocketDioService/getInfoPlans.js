@@ -1,61 +1,69 @@
 import * as utils from "../../utils";
 
 export const fetchUserPlan = async () => {
-  // Đợi lấy token & uid
-  const auth = await utils.getCurrentUserTokenAndUid();
+  // Return a premium plan regardless of the actual plan
+  const premiumPlan = {
+    uid: "premium_user",
+    username: "premium_user",
+    display_name: "Premium User",
+    profile_picture: "",
+    plan_id: "premium",
+    plan_info: {
+      id: "premium",
+      name: "Premium",
+      features: {
+        custom_theme: true,
+        select_friends: true,
+        create_post: true,
+        decorative: true,
+        background: true,
+        image_icon: true,
+        music_icon: true,
+        dev_tools: true
+      },
+      max_uploads: 999999,
+      storage_limit: 999999
+    },
+    start_date: new Date().toLocaleDateString("vi-VN"),
+    end_date: "∞"
+  };
 
-  if (!auth) {
-    console.error("Không lấy được token và uid hiện tại.");
-    return [];
-  }
-
-  const { idToken, localId, refreshToken } = auth;
-
-  try {
-    const res = await fetch(`${utils.API_URL.GET_USER_PLANS}/${localId}`, {
-      headers: { Authorization: `Bearer ${idToken}` },
-    });
-    if (!res.ok) throw new Error("Không lấy được user plan");
-    const data = await res.json();
-    // Lưu vào localStorage để cache
-    localStorage.setItem("userPlan", JSON.stringify(data));
-    return data;
-  } catch (e) {
-    // Nếu lỗi, thử lấy từ cache localStorage
-    const cached = localStorage.getItem("userPlan");
-    if (cached) {
-      try {
-        return JSON.parse(cached);
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }
+  // Save to localStorage
+  localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
+  return premiumPlan;
 };
 
 export const registerFreePlan = async (user, idToken) => {
-  try {
-    const res = await fetch(utils.API_URL.REGISTER_USER_PLANS, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
+  // Always register as premium instead of free
+  const premiumPlan = {
+    data: {
+      uid: user.localId,
+      username: user.username || user.email || "user",
+      email: user.email,
+      display_name: user.displayName || user.email,
+      profile_picture: user.profilePicture || "",
+      plan_id: "premium",
+      plan_info: {
+        id: "premium",
+        name: "Premium",
+        features: {
+          custom_theme: true,
+          select_friends: true,
+          create_post: true,
+          decorative: true,
+          background: true,
+          image_icon: true,
+          music_icon: true,
+          dev_tools: true
+        },
+        max_uploads: 999999,
+        storage_limit: 999999
       },
-      body: JSON.stringify({
-        uid: user.localId,
-        username: user.username || user.email || "user",
-        email: user.email,
-        display_name: user.displayName || user.email,
-        profile_picture: user.profilePicture || "",
-      }),
-    });
-    if (!res.ok) throw new Error("Đăng ký gói Free thất bại");
-    const data = await res.json();
-    localStorage.setItem("userPlan", JSON.stringify(data.data));
-    return data;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+      start_date: new Date().toISOString(),
+      end_date: "∞"
+    }
+  };
+
+  localStorage.setItem("userPlan", JSON.stringify(premiumPlan.data));
+  return premiumPlan;
 };

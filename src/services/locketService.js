@@ -1,13 +1,18 @@
 import axios from "axios";
 import * as utils from "../utils";
+import { encryptLoginData } from "../utils/security";
 
 //Login
 export const login = async (email, password) => {
   try {
+    // Encrypt credentials before sending
+    const { encryptedEmail, encryptedPassword } = encryptLoginData(email, password);
+    console.log('Sending encrypted data:', { encryptedEmail, encryptedPassword });
+
     const res = await axios.post(
       utils.API_URL.LOGIN_URL_V2,
-      { email, password },
-      { withCredentials: true } // Nhận cookie từ server
+      { email: encryptedEmail, password: encryptedPassword },
+      { withCredentials: true }
     );
 
     // Kiểm tra nếu API trả về lỗi nhưng vẫn có status 200
@@ -16,10 +21,25 @@ export const login = async (email, password) => {
       return null;
     }
 
-    return res.data; // Trả về dữ liệu từ server
+    // Extract user data from the response
+    const userData = res.data;
+    if (!userData) {
+      console.error("Invalid response format");
+      return null;
+    }
+
+    // Return in the expected format
+    return {
+      data: {
+        idToken: userData.idToken,
+        refreshToken: userData.refreshToken,
+        localId: userData.localId,
+        ...userData
+      }
+    };
   } catch (error) {
     if (error.response && error.response.data?.error) {
-      throw error.response.data.error; // ⬅️ Ném lỗi từ `error.response.data.error`
+      throw error.response.data.error;
     }
     console.error("❌ Network Error:", error.message);
     throw new Error(
@@ -92,8 +112,8 @@ export const getInfocheckAuth = async (idToken, localId) => {
 };
 export const getInfo = async (idToken, localId) => {
   try {
-    if (!idToken) {
-      throw new Error("Thiếu idToken! Vui lòng đăng nhập lại.");
+    if (!idToken || !localId) {
+      throw new Error("Thiếu idToken hoặc localId! Vui lòng đăng nhập lại.");
     }
 
     const res = await axios.post(utils.API_URL.GET_INFO_URL, {
@@ -105,23 +125,45 @@ export const getInfo = async (idToken, localId) => {
       throw new Error("Dữ liệu trả về không hợp lệ!");
     }
 
-    return res.data.user;
+    // Normalize user data
+    const userData = {
+      ...res.data.user,
+      idToken,
+      localId,
+      // Add any missing fields with defaults
+      firstName: res.data.user.firstName || "",
+      lastName: res.data.user.lastName || "",
+      displayName: res.data.user.displayName || res.data.user.email || "",
+      username: res.data.user.username || "",
+      email: res.data.user.email || "",
+      profilePicture: res.data.user.profilePicture || "",
+      phoneNumber: res.data.user.phoneNumber || "",
+      lastLoginAt: res.data.user.lastLoginAt || Date.now(),
+      createdAt: res.data.user.createdAt || Date.now(),
+      lastRefreshAt: res.data.user.lastRefreshAt || Date.now(),
+      customAuth: res.data.user.customAuth || false
+    };
+
+    // Save to localStorage
+    utils.saveUser(userData);
+
+    return userData;
   } catch (error) {
     let errorMessage = "Lỗi không xác định!";
 
     if (error.response) {
-      // Lỗi từ server
+      // Server error
       errorMessage = error.response.data?.message || "Lỗi từ server!";
     } else if (error.request) {
-      // Lỗi kết nối (không nhận được phản hồi)
+      // Network error
       errorMessage = "Không thể kết nối đến server! Kiểm tra mạng của bạn.";
     } else {
-      // Lỗi khác
+      // Other errors
       errorMessage = error.message;
     }
 
     console.error("❌ Lỗi khi lấy thông tin người dùng:", errorMessage);
-    throw new Error(errorMessage); // Quăng lỗi để xử lý trong component
+    throw new Error(errorMessage);
   }
 };
 //Get Momemnt

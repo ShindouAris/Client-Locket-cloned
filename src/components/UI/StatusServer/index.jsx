@@ -16,7 +16,6 @@ const StatusServer = () => {
         const response = await axios.get(utils.API_URL.CHECK_SERVER);
         setIsStatusServer(response.status === 200);
       } catch (error) {
-        setIsStatusServer(false);
       }
     };
 
