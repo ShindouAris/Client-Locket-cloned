@@ -10,7 +10,7 @@ const Footer = () => {
         <p className="text-center md:text-right text-xs">
           <span className="cursor-pointer hover:text-blue-500 transition hover:underline">Version 2.0.7</span>
           <span> • </span>
-          <span className="cursor-pointer hover:text-blue-500 transition hover:underline">API custom v1</span>
+          <a href='https://github.com/ShindouAris/LocketUploader_BE-main.git' className="cursor-pointer hover:text-blue-500 transition hover:underline">API custom v1</a>
           <span className="cursor-pointer ml-2 hidden sm:inline text-secondary hover:underline">• Read more</span>
         </p>
       </div>

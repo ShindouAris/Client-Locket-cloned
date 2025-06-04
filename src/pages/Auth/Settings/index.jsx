@@ -40,7 +40,7 @@ function SettingsPage() {
       id: "backend",
       title: "Cấu hình Backend",
       icon: <Server size={20} />,
-      description: "Tùy chỉnh kết nối đến máy chủ backend",
+      description: `Tùy chỉnh kết nối đến máy chủ backend`,
       customContent: (
         <div className="space-y-4">
           <div className="form-control">
@@ -84,17 +84,6 @@ function SettingsPage() {
         </div>
       )
     },
-    {
-      id: "account",
-      title: "Tài khoản",
-      icon: <User size={20} />,
-      description: "Quản lý thông tin cá nhân và tài khoản của bạn",
-      items: [
-        { label: "Thông tin cá nhân", value: "Cập nhật hồ sơ, ảnh đại diện" },
-        { label: "Email", value: user?.email || "Chưa cập nhật" },
-        { label: "Số điện thoại", value: user?.phone || "Chưa cập nhật" }
-      ]
-    }
   ];
 
   return (
