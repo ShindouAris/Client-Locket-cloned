@@ -4,21 +4,24 @@
 
 Với giao diện hiện đại, hiệu năng tối ưu và các tính năng tiện dụng, Locket Pro giúp bạn chia sẻ khoảnh khắc với người thân ngay trên màn hình chính của họ.
 
-> 🔗 Truy cập WebApp: [https://locket-dio.web.app](https://locket-dio.web.app)  
-> 💻 Repo Frontend: [https://github.com/doi2523/Client-Locket-Dio](https://github.com/doi2523/Client-Locket-Dio)
+> <del>🔗 Truy cập WebApp: [https://locket-dio.web.app](https://locket-dio.web.app)  
+> 💻 Repo Frontend: [https://github.com/doi2523/Client-Locket-Dio](https://github.com/doi2523/Client-Locket-Dio)</del>
 
 ---
 
-## ✨ Tính năng nổi bật
+## ✨ Tính năng nổi bật 
 
-- 🔐 **Đăng nhập nhanh chóng**: Tích hợp hệ thống xác thực đơn giản, tiện lợi.
-- 📷 **Chụp ảnh trực tiếp trên web**: Không cần rời khỏi trình duyệt.
-- 🎥 **Quay video ngay trong trình duyệt**: Ghi lại khoảnh khắc một cách tiện lợi.
-- 🖼️ **Tải ảnh/video từ thư viện**: Hỗ trợ đầy đủ upload từ thiết bị.
-- ✏️ **Tùy chỉnh caption**: Cho phép bạn thêm ghi chú hoặc cảm xúc theo sở thích.
-- ⚙️ **Giao diện hiện đại, tối ưu hiệu suất**: Hoạt động mượt mà cả trên điện thoại và desktop.
-- 👀 **Xem trước nội dung**: Trước khi gửi ảnh/video đến widget.
-- 🕰️ **Xem lại moment đã gửi**: Hệ thống lưu lịch sử các khoảnh khắc của bạn.
+> [!IMPORTANT]
+> Các tính năng đã được crack và có thể sử dụng sẽ được đánh dấu `[CRACK - Backend Modified]`
+
+- 🔐 **Đăng nhập nhanh chóng**: Tích hợp hệ thống xác thực đơn giản, tiện lợi. [CRACK - Backend Modified]
+- 📷 **Chụp ảnh trực tiếp trên web**: Không cần rời khỏi trình duyệt. [CRACK - Backend Modified]
+- 🎥 **Quay video ngay trong trình duyệt**: Ghi lại khoảnh khắc một cách tiện lợi. [CRACK - Backend Modified]
+- 🖼️ **Tải ảnh/video từ thư viện**: Hỗ trợ đầy đủ upload từ thiết bị. [CRACK - Backend Modified]
+- ✏️ **Tùy chỉnh caption**: Cho phép bạn thêm ghi chú hoặc cảm xúc theo sở thích. [CRACK - Backend Modified]
+- ⚙️ **Giao diện hiện đại, tối ưu hiệu suất**: Hoạt động mượt mà cả trên điện thoại và desktop. [CRACK - Backend Modified]
+- 👀 **Xem trước nội dung**: Trước khi gửi ảnh/video đến widget. [CRACK - Backend Modified]
+- 🕰️ **Xem lại moment đã gửi**: Hệ thống lưu lịch sử các khoảnh khắc của bạn. [Not work for now]
 
 ---
 
@@ -37,29 +40,23 @@ Với giao diện hiện đại, hiệu năng tối ưu và các tính năng ti�
 
 ## 🤝 Đóng góp & Hỗ trợ
 
-Nếu bạn có ý tưởng hay phát hiện lỗi, đừng ngần ngại tạo **Issue** hoặc **Pull Request** để cùng mình cải thiện dự án.
-<p align="left">
-  <a target="_blank">
-    <img src="./public/images/buymeacoffe.png" alt="Image">
-  </a>
-</p>
-<p align="left">
-  <img src="./public/images/donate.jpg" alt="Ủng hộ" width="300px">
-</p>
+Nếu bạn muốn đóng góp cho dự án này, hãy quay lại trang repo của chính chủ!<br>
+Fork này không liên quan đến repo của chính chủ! <br>
+https://github.com/doi2523/Client-Locket-Dio
 
 ---
 
-## 📢 Ghi chú
+> [!IMPORTANT]
+> Hệ thống 100% **không lưu trữ thông tin người dùng**. Tất cả dữ liệu chỉ phục vụ chức năng tải ảnh/video. <br/>
+> Repo Backend: https://github.com/ShindouAris/LocketUploader_BE-main.git
 
-- Hệ thống **không lưu trữ thông tin người dùng**. Tất cả dữ liệu chỉ phục vụ chức năng tải ảnh/video.
-- **Backend hiện chưa được public** do chứa nhiều thành phần nội bộ và chưa sẵn sàng chia sẻ.
 
 ---
 
 ⭐ Nếu bạn thấy dự án hữu ích, hãy để lại một ⭐ trên repo để ủng hộ mình nhé!  
-📬 Tham gia kênh **Telegram**: https://t.me/ddevdio để cập nhật sự kiện và tính năng mới sớm nhất!
+<del>📬 Tham gia kênh **Telegram**: https://t.me/ddevdio để cập nhật sự kiện và tính năng mới sớm nhất!</del>
 
 ---
 
-© 2025 [Locket Pro](https://locket-dio.web.app) by Dio. All rights reserved.  
+© 2025 [Locket Pro]() cracked by Kanade. All rights reserved.  
 
