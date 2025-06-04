@@ -32,7 +32,7 @@ Với giao diện hiện đại, hiệu năng tối ưu và các tính năng ti�
 
   <img src="./public/images/preview_1.jpg" width="300px" alt="Screenshot 1">
   <img src="./public/images/preview_2.jpg" width="300px" alt="Screenshot 1">
-  <!-- Thêm các ảnh khác nếu có -->
+  <img src="./public/images/preview_pc.png"  alt="Screenshot pc">
   
 </details>
 
