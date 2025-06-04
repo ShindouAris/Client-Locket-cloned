@@ -185,7 +185,7 @@ const AddPostButton = () => {
             </div>
 
             <div className="mb-4 relative">
-              <label htmlFor="content" className="block text-sm font-medium">
+              {/* <label htmlFor="content" className="block text-sm font-medium">
                 Nội dung
               </label>
               <textarea
@@ -197,17 +197,17 @@ const AddPostButton = () => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 disabled={isLoading} // disable khi loading
-              />
-              <p className="absolute">Chỉ bấm gửi một lần tránh spam</p>
+              /> */}
+              <p>Cái tính năng này không hoạt động</p>
             </div>
 
             <div className="flex justify-end">
               <button
                 type="submit"
                 className={`p-2 rounded-md text-white ${
-                  isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500"
+                  !isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500"
                 }`}
-                disabled={isLoading}
+                disabled={true}
               >
                 {isLoading ? (
                   <>

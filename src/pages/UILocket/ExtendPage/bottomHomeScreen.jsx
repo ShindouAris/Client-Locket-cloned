@@ -89,7 +89,7 @@ const BottomHomeScreen = () => {
       >
         {recentPosts.length === 0 ? (
           <div className="w-full h-full text-center text-lg text-base-content font-semibold">
-            Không có gì ở đây :(
+            Tính năng này chưa được hỗ trợ bởi backend custom
           </div>
         ) : (
           recentPosts.map((item) => (

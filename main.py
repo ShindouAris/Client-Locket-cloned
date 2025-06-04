@@ -59,7 +59,7 @@ data = [
         "created_at": "2025-05-30T14:59:16.822992+00:00"
     },
     {
-        "id": 1,
+        "id": 6,
         "uid": "RCQ94Icmh7fvFr5ycLaHJgyQo8j1",
         "options": {
             "type": "background",
@@ -105,7 +105,32 @@ data = [
             "downloads": 0
         },
         "created_at": "2025-05-28T14:15:02.732182+00:00"
-    }
+    },
+    {
+        "id": 1,
+        "uid": "RCQ94Icmh7fvFr5ycLaHJgyQo8j1",
+        "options": {
+            "type": "background",
+            "caption": "",
+            "color_top": "#8B5DFF",
+            "color_text": "#FFF7D1",
+            "color_bottom": "#6A42C2"
+        },
+        "user_info": {
+            "plan": "Premium",
+            "username": "kanade",
+            "displayName": "Kanade 🎧",
+            "profilePicture": "https://raw.githubusercontent.com/ShindouAris/Client-Locket-cloned/refs/heads/main/public/locket-icon.png"
+        },
+        "stats": {
+            "hearts": 727,
+            "shares": 123,
+            "comments": 0,
+            "downloads": 1924
+        },
+        "created_at": "2025-06-04T14:40:59.557238+00:00"
+    },
+    
 ]
 
 themes = [

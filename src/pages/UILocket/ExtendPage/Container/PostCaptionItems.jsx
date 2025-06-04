@@ -43,7 +43,7 @@ const PostCard = ({ post }) => {
               {post?.user_info?.displayName || "Anonymous"}{" • "}
               <div className="flex items-center space-x-1">
                 {/* Badge Admin */}
-                {post?.user_info?.username === "diodio" && (
+                {post?.user_info?.username === "kanade" && (
                   <span
                     className="px-2 py-0.5 text-xs rounded-full text-white font-semibold shadow-md"
                     style={{

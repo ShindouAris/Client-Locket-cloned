@@ -72,10 +72,9 @@ const MediaControls = () => {
   
       const savedPayloads = JSON.parse(localStorage.getItem("uploadPayloads") || "[]");
       savedPayloads.push(payload);
-      // localStorage.setItem("uploadPayloads", JSON.stringify(savedPayloads));
+      localStorage.setItem("uploadPayloads", JSON.stringify(savedPayloads));
   
       const response = await PostMoments(payload);
-  
       const savedResponses = JSON.parse(localStorage.getItem("uploadedMoments") || "[]");
       const normalizedNewData = utils.normalizeMoments([response?.data]);
       const updatedData = [...savedResponses, ...normalizedNewData];
@@ -96,10 +95,6 @@ const MediaControls = () => {
       showError(`Tải lên thất bại: ${errorMessage}`);
   
       console.error("❌ Upload thất bại, hàng đợi dừng lại tại đây:", error);
-  
-      // KHÔNG gọi lại handleQueueUpload ở đây => dừng hẳn
-      // Nếu muốn cho phép bỏ qua lỗi và tiếp tục, dùng dòng này thay:
-      // uploadQueue.shift(); handleQueueUpload();
     }
   };
   
