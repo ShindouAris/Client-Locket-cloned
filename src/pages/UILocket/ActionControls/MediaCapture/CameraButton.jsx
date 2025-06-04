@@ -77,7 +77,7 @@ const CameraButton = () => {
         setCameraActive(false);
 
         const blob = new Blob(chunks, { type: "video/webm" });
-        const file = new File([blob], "video.mp4", { type: "video/mp4" });
+        const file = new File([blob], "video.webm", { type: "video/webm" });
         const videoUrl = URL.createObjectURL(file);
 
         const fileSizeInMB = file.size / (1024 * 1024);
