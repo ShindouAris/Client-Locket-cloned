@@ -117,9 +117,9 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <Link
-                    to="/aboutdio"
+                    to="/aboutme"
                     className={`flex items-center px-3 py-3 rounded-lg transition ${
-                      location.pathname === "/aboutdio"
+                      location.pathname === "/aboutme"
                         ? "bg-base-300"
                         : "hover:bg-base-200"
                     }`}
@@ -263,9 +263,9 @@ const Sidebar = () => {
 
                 <li>
                   <Link
-                    to="/about-dio"
+                    to="/about-me"
                     className={`flex items-center px-3 py-3 rounded-lg transition ${
-                      location.pathname === "/about-dio"
+                      location.pathname === "/about-me"
                         ? "bg-base-300"
                         : "hover:bg-base-220"
                     }`}
@@ -274,21 +274,6 @@ const Sidebar = () => {
                     <Briefcase size={22} /> Giới thiệu 
                   </Link>
                 </li>
-
-                <li>
-                  <Link
-                    to="/contact"
-                    className={`flex items-center px-3 py-3 rounded-lg transition ${
-                      location.pathname === "/contact"
-                        ? "bg-base-300"
-                        : "hover:bg-base-220"
-                    }`}
-                    onClick={() => setIsSidebarOpen(false)}
-                  >
-                    <Mail size={22} /> Liên hệ
-                  </Link>
-                </li>
-
                 <li>
                   <Link
                     to="/docs"

@@ -65,7 +65,11 @@ const Login = () => {
             window.location.href = "/login";
             break;
           case 500:
-            showToast("error", "Lỗi hệ thống, vui lòng thử lại sau!");
+            if (error.message.includes("Bad Request")) {
+              showToast("error", "Email hoặc mật khẩu không đúng!");
+            } else {
+              showToast("error", "Lỗi hệ thống, vui lòng thử lại sau!");
+            }
             break;
           default:
             showToast("error", message || "Đăng nhập thất bại!");

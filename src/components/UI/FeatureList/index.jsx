@@ -8,6 +8,8 @@ import {
   Sparkles,
   Rocket,
   Users,
+  Server,
+  JapaneseYen,
 } from "lucide-react";
 
 const features = [
@@ -32,15 +34,15 @@ const features = [
     description: "Tuỳ chỉnh màu sắc caption cho thật nổi bật.",
   },
   {
-    icon: <Users className="w-8 h-8 text-yellow-500" />,
-    title: "Forums cộng đồng",
-    description: "Chia sẻ và khám phá màu sắc caption độc đáo từ mọi người.",
+    icon: <JapaneseYen className="w-8 h-8 text-orange-600" />,
+    title: "Mọi tính năng đều miễn phí",
+    description: "Với việc sử dụng hệ thống Backend tùy chỉnh, bạn có thể tải lên bài viết mà không lo bị giới hạn.",
   },
   {
-    icon: <Rocket className="w-8 h-8 text-orange-600" />,
-    title: "Tính năng mới - Sắp ra mắt",
-    description: "Tralalero Tralala.",
-  },
+    icon: <Server className="w-8 h-8 text-orange-600" />,
+    title: "Tùy chỉnh hệ thống backend",
+    description: "Với việc sử dụng backend mã nguồn mở, bạn có thể kiểm soát những gì được lưu.",
+  }
 ];
 
 const FeatureList = () => {
