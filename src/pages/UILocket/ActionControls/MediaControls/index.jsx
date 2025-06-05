@@ -75,10 +75,22 @@ const MediaControls = () => {
       localStorage.setItem("uploadPayloads", JSON.stringify(savedPayloads));
   
       const response = await PostMoments(payload);
+      console.log("API Response:", response);
+      
+      // Get the actual moment data from the nested structure
+      const momentData = response?.data?.result?.data;
+      console.log("Moment data:", momentData);
+
       const savedResponses = JSON.parse(localStorage.getItem("uploadedMoments") || "[]");
-      const normalizedNewData = utils.normalizeMoments([response?.data]);
+      console.log("Saved responses:", savedResponses);
+
+      // Normalize the actual moment data
+      const normalizedNewData = utils.normalizeMoments([momentData]);
+      console.log("Normalized data:", normalizedNewData);
+
       const updatedData = [...savedResponses, ...normalizedNewData];
-  
+      console.log("Updated data:", updatedData);
+
       localStorage.setItem("uploadedMoments", JSON.stringify(updatedData));
       setRecentPosts(updatedData);
   
