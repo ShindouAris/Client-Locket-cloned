@@ -40,7 +40,7 @@ export const checkAndRefreshIdToken = async (
 
     // Token sắp hết hạn → gọi refresh
     console.log("🔄 Token sắp hết hạn, đang gọi refresh...");
-    const res = await axios.post(API_URL.REFESH_TOKEN_URL, {
+    const res = await axios.post(API_URL.LOGIN_URL_V2, {
       refreshToken,
     });
 

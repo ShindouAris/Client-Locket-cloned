@@ -19,6 +19,7 @@ import {
   History,
   Wrench,
   Settings2,
+  Settings,
 } from "lucide-react";
 import { showToast } from "../Toast";
 import * as ultils from "../../utils";
@@ -327,6 +328,19 @@ const Sidebar = () => {
                     onClick={() => setIsSidebarOpen(false)}
                   >
                     <Rocket size={22} /> Gói thành viên
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/settings"
+                    className={`flex items-center px-3 py-3 rounded-lg transition ${
+                      location.pathname === "/settings"
+                        ? "bg-base-300"
+                        : "hover:bg-base-220"
+                    }`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <Settings size={22} /> Cài đặt
                   </Link>
                 </li>
 
