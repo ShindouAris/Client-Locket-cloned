@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthLocket";
 import LoadingRing from "../../../components/UI/Loading/ring";
 import * as locketService from "../../../services/locketService";
+import { getListIdFriends } from "../../../services/LocketDioService/FriendsServices";
 import * as utils from "../../../utils";
 import axios from "axios";
 
@@ -47,7 +48,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const data = await getListIdFriend(user.idToken, user.localId);
+        const data = await getListIdFriends();
         console.log("✅ Danh sách bạn bè:", data);
         setUserinfo(prev => ({ ...prev, friends: data }));
   
@@ -176,7 +177,7 @@ export default function Profile() {
         </div>
         <div className="flex flex-col pl-5 text-center items-start space-y-1">
           <h2 className="text-2xl font-semibold">
-            {user?.firstName} {user?.lastName}
+            {user?.displayName}
           </h2>
           <p className="font-semibold">{user?.email || "Không có email"}</p>
           <a  

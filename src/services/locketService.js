@@ -355,10 +355,10 @@ export const fetchUser = async (user_uid, idToken) => {
       },
     },
     {
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-        "Content-Type": "application/json",
-      },
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json",
+        },
     }
   );
 };
