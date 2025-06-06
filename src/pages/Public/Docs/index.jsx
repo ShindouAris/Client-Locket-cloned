@@ -5,8 +5,7 @@ const Docs = () => {
     <div className="min-h-screen px-4 flex flex-col items-center py-5">
       <div className="h-16"></div>
       <h1 className="text-3xl font-semibold mb-5">
-        <del>Hướng Dẫn Sử Dụng Trang Web Locket Dio by Dio</del><br/>
-        <span className="text-red-500">Lưu ý: các tính năng crack vẫn chưa xong hoàn toàn / lỗi</span>
+        Hướng Dẫn Sử Dụng Trang Web Locket Kanade
       </h1>
 
       <div className="max-w-3xl text-left mb-12">
@@ -15,7 +14,7 @@ const Docs = () => {
           1. Giới Thiệu Về Locket Kanade
         </h2>
         <p className="text-sm leading-relaxed">
-          Locket K là nền tảng WebApp giúp bạn dễ dàng tải lên, lưu trữ và
+          Locket Kanade là nền tảng WebApp giúp bạn dễ dàng tải lên, lưu trữ và
           chia sẻ ảnh, video với phong cách riêng biệt qua các caption tùy
           chỉnh. Chúng tôi cam kết mang đến cho bạn trải nghiệm quản lý nội dung
           thuận tiện, bảo mật và tối ưu nhất trên web.
@@ -24,12 +23,13 @@ const Docs = () => {
         {/* Tính Năng Chính */}
         <h2 className="text-2xl font-semibold mt-6">2. Tính Năng Chính</h2>
         <ul className="list-disc ml-5 text-sm">
-          <li>Đăng nhập vào hệ thống.</li>
+          <li>Đăng nhập vào hệ thống với bảo mật nâng cao.</li>
           <li>Tải ảnh và video lên Locket.</li>
-          <li>Custome caption theo ý thích.</li>
+          <li>Tùy chỉnh caption theo ý thích.</li>
           <li>Chọn bạn bè có thể xem khi đăng.</li>
           <li>Forums chia sẻ màu caption.</li>
           <li>Quay video hoặc chụp ảnh trực tiếp trên web.</li>
+          <li>Tùy chỉnh backend cho người dùng nâng cao.</li>
           <li>
             Tăng chất lượng ảnh/video{" "}
             <span className="text-secondary">(coming soon)</span>.
@@ -53,6 +53,10 @@ const Docs = () => {
           <li>
             <b>Quyền riêng tư:</b> Các tệp tin tải lên sẽ được bảo mật, nhưng
             hãy chắc chắn rằng bạn không chia sẻ thông tin nhạy cảm.
+          </li>
+          <li>
+            <b>Cài đặt Backend:</b> Người dùng nâng cao có thể tùy chỉnh URL backend 
+            và encryption key trong phần cài đặt. URL phải bắt đầu bằng https://.
           </li>
         </ul>
 
@@ -90,15 +94,6 @@ const Docs = () => {
           Đây là cách nhanh chóng và hiệu quả để giảm kích thước tệp mà không
           cần sử dụng công cụ nén bên ngoài.
         </p>
-        <p className="text-sm text-secondary">
-          Nếu vẫn gặp lỗi, hãy liên hệ nhanh qua 👉🏻
-          <a
-            href="sms:+84 329254203" // Thay số điện thoại của bạn vào đây
-            className="underline font-semibold"
-          >
-            iMessage
-          </a>
-        </p>
 
         {/* Câu Hỏi Thường Gặp (FAQ) */}
         <h2 className="text-2xl font-semibold mt-6">
@@ -108,13 +103,12 @@ const Docs = () => {
           <li>
             <b>Có thể xóa ảnh/video đã tải lên không?</b> Có. Bạn có thể xoá
             ảnh/video đã đăng bất kỳ lúc nào từ màn hình chính bằng cách nhấn
-            giữ và chọn nút xoá. Tính năng này đang được cải tiến để tối ưu hơn
-            trong tương lai.
+            giữ và chọn nút xoá.
           </li>
           <li>
-            <b>Người sáng lập Locket Dio là ai?</b> Locket Dio được phát triển
-            bởi Đào Văn Đôi (Dio), sinh viên năm cuối ngành Công nghệ Thông tin,
-            với đam mê tạo ra sản phẩm sáng tạo và hữu ích.
+            <b>Tôi có thể tùy chỉnh backend không?</b> Có, người dùng nâng cao có thể 
+            tùy chỉnh URL backend và encryption key trong phần cài đặt. URL phải bắt 
+            đầu bằng https:// và encryption key phải được cung cấp chính xác.
           </li>
           <li>
             <b>Gói thành viên là gì?</b> Gói thành viên là các gói dịch vụ giúp
@@ -122,13 +116,11 @@ const Docs = () => {
             hơn, lưu trữ nhiều hơn, và hỗ trợ tùy chỉnh cá nhân hóa tốt hơn.
           </li>
           <li>
-            <b>Làm sao để nâng cấp gói thành viên?</b> Hiện tại, bạn có thể liên
-            hệ quản trị viên hoặc thông qua mục đăng ký gói trên giao diện
-            chính. Thanh toán sẽ hỗ trợ qua các phương thức như Momo, chuyển
-            khoản hoặc ví điện tử khác.
+            <b>Làm sao để nâng cấp gói thành viên?</b> Hiện tại, trang web đã được patch
+            và không cần nâng cấp gói thành viên.
           </li>
           <li>
-            <b>Trang web hỗ trợ các trình duyệt nào?</b> Locket Dio hỗ trợ tất
+            <b>Trang web hỗ trợ các trình duyệt nào?</b> Locket Kanade hgỗ trợ tất
             cả các trình duyệt hiện đại như Chrome, Firefox, Safari, Edge và
             trình duyệt di động Android/iOS.
           </li>
@@ -138,22 +130,15 @@ const Docs = () => {
             nhập (username) để xác thực tài khoản và đảm bảo an toàn cho người
             dùng. Chúng tôi cam kết sử dụng thông tin này một cách nghiêm túc,
             không chia sẻ với bên thứ ba và chỉ dùng để hỗ trợ quản lý tài khoản
-            cũng như nâng cao trải nghiệm của bạn. Ảnh và video bạn tải lên được
-            bảo mật riêng tư, không bị theo dõi hay phân tích hành vi.
+            cũng như nâng cao trải nghiệm của bạn.
           </li>
-
           <li>
             <b>Tôi có thể xem lại những ảnh/video đã đăng không?</b> Có. Các bài
             đã đăng được lưu trong mục lịch sử đăng (Recent Posts), bạn có thể
             xem lại và xoá bất kỳ lúc nào.
           </li>
           <li>
-            <b>Mã nguồn API?</b> Nếu bạn muốn tìm hiểu hoặc tích hợp API từ
-            Locket Dio, hãy liên hệ quản trị viên qua email để được cấp quyền
-            hoặc tài liệu hướng dẫn.
-          </li>
-          <li>
-            <b>Trang web có quảng cáo không?</b> Không. Locket Dio hoạt động
+            <b>Trang web có quảng cáo không?</b> Không. Locket Kanade hoạt động
             hoàn toàn không có quảng cáo để giữ trải nghiệm người dùng liền mạch và
             sạch sẽ.
           </li>
@@ -168,22 +153,19 @@ const Docs = () => {
         {/* Cam Đoan Bảo Mật */}
         <h2 className="text-2xl font-semibold mt-6">6. Chính Sách Bảo Mật</h2>
         <p className="text-sm">
-          Locket Dio cam kết bảo mật thông tin tài khoản của bạn. Tất cả các tệp
+          Locket Kanade cam kết bảo mật thông tin tài khoản của bạn. Tất cả các tệp
           tin và dữ liệu mà bạn tải lên sẽ được bảo vệ bằng các biện pháp an
-          toàn, và tôi không lưu trữ bất kỳ thông tin nhạy cảm nào liên quan đến
-          tài khoản của bạn. Tôi luôn nỗ lực để đảm bảo rằng các thông tin cá
-          nhân và tài khoản của bạn được bảo vệ một cách an toàn nhất.
+          toàn cao cấp. Chúng tôi không lưu trữ bất kỳ thông tin nhạy cảm nào và 
+          luôn nỗ lực để đảm bảo rằng các thông tin cá nhân và tài khoản của bạn 
+          được bảo vệ một cách an toàn nhất.
         </p>
 
         {/* Liên Hệ */}
         <h2 className="text-2xl font-semibold mt-6">7. Liên Hệ</h2>
         <p className="text-sm">
-          Nếu bạn có bất kỳ câu hỏi hoặc vấn đề gì, vui lòng liên hệ với tôi qua
-          email:{" "}
-          <a href="mailto:doibncm2003@gmail.com" className="text-blue-500">
-            doibncm2003@gmail.com
-          </a>
-          .
+          <del>
+          Nếu bạn có bất kỳ câu hỏi hoặc vấn đề gì, vui lòng liên hệ với chúng tôi 
+          thông qua mục hỗ trợ trong ứng dụng.</del>
         </p>
       </div>
     </div>

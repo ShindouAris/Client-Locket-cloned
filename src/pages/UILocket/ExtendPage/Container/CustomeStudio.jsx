@@ -209,7 +209,6 @@ const ScreenCustomeStudio = () => {
             <X size={30} />
           </button>
         </div>
-        {/* Nội dung - Cuộn được */}
         <div className="flex-1 overflow-y-auto px-4">
           <ThemesCustomes
             title="🎨 Your Saved Theme"
@@ -249,7 +248,7 @@ const ScreenCustomeStudio = () => {
             <div className="flex flex-wrap gap-4 pt-2 pb-5 justify-start text-base-content">
               <p>Tung tung tung tung sahur 🎉</p>
               <p>
-                Phiên bản sắp tới <strong>V2.0.7</strong>
+                Phiên bản sắp tới <strong>V2.0.8</strong>
               </p>
               <p>
                 Theo dõi kênh{" "}
@@ -266,7 +265,7 @@ const ScreenCustomeStudio = () => {
                 Tham gia nhóm Discord{" "}
                 <a
                   className="text-primary font-semibold underline hover:text-primary-focus"
-                  href="https://discord.gg/47buy9nMGc"
+                  href="https://discord.gg/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -276,10 +275,10 @@ const ScreenCustomeStudio = () => {
               <p>
                 Mọi đóng góp hỗ trợ xin nhận tại{" "}
                 <Link
-                  to="/aboutdio"
+                  to="/aboutme"
                   className="text-primary font-semibold underline hover:text-primary-focus"
                 >
-                  trang giới thiệu Dio
+                  trang giới thiệu web
                 </Link>
               </p>
             </div>
