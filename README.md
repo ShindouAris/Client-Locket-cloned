@@ -21,7 +21,7 @@ Với giao diện hiện đại, hiệu năng tối ưu và các tính năng ti�
 - ✏️ **Tùy chỉnh caption**: Cho phép bạn thêm ghi chú hoặc cảm xúc theo sở thích. [CRACK - Backend Modified]
 - ⚙️ **Giao diện hiện đại, tối ưu hiệu suất**: Hoạt động mượt mà cả trên điện thoại và desktop. [CRACK - Backend Modified]
 - 👀 **Xem trước nội dung**: Trước khi gửi ảnh/video đến widget. [CRACK - Backend Modified]
-- 🕰️ **Xem lại moment đã gửi**: Hệ thống lưu lịch sử các khoảnh khắc của bạn. [Not work for now]
+- 🕰️ **Xem lại moment đã gửi**: Hệ thống lưu lịch sử các khoảnh khắc của bạn. [CRACK - Backend Modified]
 
 ---
 
