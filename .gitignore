@@ -30,3 +30,4 @@ firebase.json
 .env.production
 
 LocketUploader_*
+app-private.pem
