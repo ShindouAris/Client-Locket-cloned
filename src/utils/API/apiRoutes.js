@@ -8,9 +8,6 @@ const getBaseUrl = () => {
 };
 
 const getBaseDbUrl = () => {
-  if (import.meta.env.VITE_BASE_API_URL_DB) {
-    return import.meta.env.VITE_BASE_API_URL_DB;
-  }
   return getBackendUrl();
 };
 

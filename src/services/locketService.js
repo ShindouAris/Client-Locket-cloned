@@ -3,15 +3,22 @@ import * as utils from "../utils";
 import { encryptLoginData } from "../utils/security";
 
 //Login
-export const login = async (email, password) => {
+export const login = async (email, password, turnstileToken) => {
   try {
     // Encrypt credentials before sending
     const { encryptedEmail, encryptedPassword } = encryptLoginData(email, password);
     console.log('Sending encrypted data:', { encryptedEmail, encryptedPassword });
 
+    // Only include turnstileToken if it exists
+    const requestBody = {
+      email: encryptedEmail,
+      password: encryptedPassword,
+      ...(turnstileToken && { turnstileToken })
+    };
+
     const res = await axios.post(
       utils.API_URL.LOGIN_URL_V2,
-      { email: encryptedEmail, password: encryptedPassword },
+      requestBody,
       { withCredentials: true }
     );
 

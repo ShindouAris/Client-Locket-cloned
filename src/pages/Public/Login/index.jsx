@@ -7,11 +7,14 @@ import LoadingRing from "../../../components/UI/Loading/ring";
 import StatusServer from "../../../components/UI/StatusServer";
 import { useApp } from "../../../context/AppContext";
 import FloatingNotification from "../../../components/UI/FloatingNotification";
+import Turnstile from "react-turnstile";
+import { isUsingCustomBackend } from "../../../utils/backendConfig";
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [rememberMe, setRememberMe] = useState(() => {
     const stored = localStorage.getItem("rememberMe");
     return stored === null ? true : stored === "true";
@@ -19,6 +22,10 @@ const Login = () => {
 
   const { useloading } = useApp();
   const { isStatusServer, isLoginLoading, setIsLoginLoading } = useloading;
+  
+  // Check if using custom backend
+  const [isTurnstileEnabled, setIsTurnstileEnabled] = useState(!isUsingCustomBackend());
+
   useEffect(() => {
     if (rememberMe) {
       localStorage.setItem("rememberMe", "true");
@@ -26,6 +33,11 @@ const Login = () => {
       localStorage.removeItem("rememberMe");
     }
   }, [rememberMe]);
+
+  // Update Turnstile state when custom backend changes
+  useEffect(() => {
+    setIsTurnstileEnabled(!isUsingCustomBackend());
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,9 +48,14 @@ const Login = () => {
       return;
     }
 
+    if (isTurnstileEnabled && !turnstileToken) {
+      showToast("error", "Vui lòng xác thực Turnstile!");
+      return;
+    }
+
     setIsLoginLoading(true);
     try {
-      const res = await locketService.login(email, password);
+      const res = await locketService.login(email, password, turnstileToken);
       if (!res) throw new Error("Lỗi: Server không trả về dữ liệu!");
 
       const { idToken, refreshToken, localId } = res.data;
@@ -129,6 +146,16 @@ const Login = () => {
               </label>
             </div>
 
+            {isTurnstileEnabled && (
+              <div className="flex justify-center my-4">
+                <Turnstile
+                  sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                  onVerify={(token) => setTurnstileToken(token)}
+                  theme="light"
+                />
+              </div>
+            )}
+
             <button
               type="submit"
               className={`
@@ -139,7 +166,7 @@ const Login = () => {
                     : ""
                 }
               `}
-              disabled={isStatusServer !== true || isLoginLoading}
+              disabled={isStatusServer !== true || isLoginLoading || (isTurnstileEnabled && !turnstileToken)}
             >
               {isLoginLoading ? (
                 <>
@@ -152,7 +179,6 @@ const Login = () => {
             </button>
             <span className="text-xs">Vui lòng chờ Server02 khởi động.</span>
             <StatusServer />
-            {/* <PushNotificationButton/> */}
           </form>
         </div>
         <FloatingNotification />
