@@ -105,6 +105,7 @@ export const PostMoments = async (payload) => {
     const formData = new FormData();
     formData.append("userId", payload.userData.localId);
     formData.append("idToken", payload.userData.idToken);
+    formData.append("options", JSON.stringify(payload.options));
     formData.append("caption", payload.options.caption || "");
     
     // Add the actual file
