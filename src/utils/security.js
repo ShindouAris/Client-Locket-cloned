@@ -14,9 +14,6 @@ const getEncryptionKey = () => {
 export const encryptLoginData = (email, password) => {
     try {
         const HASH_SECRET_KEY = getEncryptionKey();
-        console.log('Encryption key:', HASH_SECRET_KEY);
-        console.log('Original email:', email);
-        console.log('Original password:', password);
 
         // Convert the strings to WordArray objects
         const emailWordArray = CryptoJS.enc.Utf8.parse(email);
@@ -32,9 +29,6 @@ export const encryptLoginData = (email, password) => {
             mode: CryptoJS.mode.ECB,
             padding: CryptoJS.pad.Pkcs7
         }).toString();
-
-        console.log('Encrypted email:', encryptedEmail);
-        console.log('Encrypted password:', encryptedPassword);
 
         return { encryptedEmail, encryptedPassword };
     } catch (error) {
