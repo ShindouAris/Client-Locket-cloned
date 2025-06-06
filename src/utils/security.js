@@ -1,9 +1,19 @@
 import CryptoJS from 'crypto-js';
 
-const HASH_SECRET_KEY = import.meta.env.VITE_HASH_SECRET_KEY || 'default-key';
+const getEncryptionKey = () => {
+    const isCustomBackend = localStorage.getItem("use_custom_backend") === "true";
+    if (isCustomBackend) {
+        const customKey = localStorage.getItem("custom_backend_encrypt_key");
+        if (customKey) {
+            return customKey;
+        }
+    }
+    return import.meta.env.VITE_HASH_SECRET_KEY || 'youshallnotpass';
+};
 
 export const encryptLoginData = (email, password) => {
     try {
+        const HASH_SECRET_KEY = getEncryptionKey();
         console.log('Encryption key:', HASH_SECRET_KEY);
         console.log('Original email:', email);
         console.log('Original password:', password);
