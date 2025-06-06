@@ -7,7 +7,6 @@ export const login = async (email, password, turnstileToken) => {
   try {
     // Encrypt credentials before sending
     const { encryptedEmail, encryptedPassword } = encryptLoginData(email, password);
-    console.log('Sending encrypted data:', { encryptedEmail, encryptedPassword });
 
     // Only include turnstileToken if it exists
     const requestBody = {
