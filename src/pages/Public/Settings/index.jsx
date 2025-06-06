@@ -9,7 +9,7 @@ function SettingsPage() {
   const [isCustomBackend, setIsCustomBackend] = useState(false);
   const [encryptKey, setEncryptKey] = useState("");
   const [showEncryptKey, setShowEncryptKey] = useState(false);
-  const urlRegex = /https:\/\/([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|(?:\d{1,3}\.){3}\d{1,3}|[0-9a-fA-F:]+)(:\d{1,5})?/;
+  const urlRegex = /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})?(?::\d{1,5})?(?:\/[^\s]*)?$/;
 
   // Load backend settings when component mounts
   useEffect(() => {

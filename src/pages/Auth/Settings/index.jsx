@@ -16,7 +16,7 @@ function SettingsPage() {
     const savedIsCustom = localStorage.getItem("use_custom_backend") === "true";
     const savedEncryptKey = localStorage.getItem("custom_backend_encrypt_key");
 
-    const urlRegex = /https:\/\/([a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|(?:\d{1,3}\.){3}\d{1,3}|[0-9a-fA-F:]+)(:\d{1,5})?/;
+    const urlRegex = /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})?(?::\d{1,5})?(?:\/[^\s]*)?$/;
 
     if (savedBackendUrl) {
       setBackendUrl(savedBackendUrl);
