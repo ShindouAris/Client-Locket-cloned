@@ -177,7 +177,7 @@ const Login = () => {
                 "Đăng Nhập"
               )}
             </button>
-            <span className="text-xs">Vui lòng chờ Server02 khởi động.</span>
+            <span className="text-xs">Vui lòng chờ các Node khởi động.</span>
             <StatusServer />
           </form>
         </div>

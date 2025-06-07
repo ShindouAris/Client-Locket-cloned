@@ -1,6 +1,14 @@
-const DEFAULT_BACKEND_URL = import.meta.env.VITE_BASE_API_URL; // Thay thế bằng URL mặc định của bạn
+const DEFAULT_BACKEND_NODES = [import.meta.env.VITE_BASE_API_URL]; // Default backend URL
+const ADMIN_BACKEND_NODES = import.meta.env.VITE_ADMIN_API_URLS ? 
+  JSON.parse(import.meta.env.VITE_ADMIN_API_URLS) : 
+  [import.meta.env.VITE_BASE_API_URL];
 
-export const getBackendUrl = () => {
+export const getBackendNodes = () => {
+  // Only admin/owner nodes are used for load balancing
+  return ADMIN_BACKEND_NODES;
+};
+
+export const getBackendUrl = async () => {
   const useCustomBackend = localStorage.getItem("use_custom_backend") === "true";
   if (useCustomBackend) {
     const customUrl = localStorage.getItem("custom_backend_url");
@@ -8,7 +16,10 @@ export const getBackendUrl = () => {
       return customUrl.trim();
     }
   }
-  return DEFAULT_BACKEND_URL;
+  
+  // Import dynamically to avoid circular dependency
+  const loadBalancer = (await import('./loadBalancer')).default;
+  return await loadBalancer.getHealthyNode();
 };
 
 export const isUsingCustomBackend = () => {
@@ -20,7 +31,7 @@ export const getCustomBackendUrl = () => {
 };
 
 export const setCustomBackend = (url, enabled = true) => {
-  if (enabled) {
+  if (enabled && url) {
     localStorage.setItem("custom_backend_url", url.trim());
     localStorage.setItem("use_custom_backend", "true");
   } else {

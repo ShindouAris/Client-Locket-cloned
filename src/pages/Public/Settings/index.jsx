@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Settings2, Bell, Shield, Palette, User, Server, Eye, EyeOff } from "lucide-react";
+import { Settings2, Server, Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../../../context/AuthLocket";
 import { showSuccess, showInfo } from "../../../components/Toast";
+import { getCustomBackendUrl } from "../../../utils/backendConfig";
 
 function SettingsPage() {
   const { user } = useContext(AuthContext);
@@ -9,15 +10,16 @@ function SettingsPage() {
   const [isCustomBackend, setIsCustomBackend] = useState(false);
   const [encryptKey, setEncryptKey] = useState("");
   const [showEncryptKey, setShowEncryptKey] = useState(false);
-  const urlRegex = /^https?:\/\/(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})?(?::\d{1,5})?(?:\/[^\s]*)?$/;
+  const urlRegex = /^https?:\/\/(?:[a-zA-Z0-9_-]+\.)*[a-zA-Z0-9_-]+(?:\.[a-zA-Z]{2,})?(?::\d{1,5})?(?:\/[^\s]*)?$/;
 
   // Load backend settings when component mounts
   useEffect(() => {
-    const savedBackendUrl = localStorage.getItem("custom_backend_url");
+    const savedUrl = getCustomBackendUrl();
     const savedIsCustom = localStorage.getItem("use_custom_backend") === "true";
     const savedEncryptKey = localStorage.getItem("custom_backend_encrypt_key");
-    if (savedBackendUrl) {
-      setBackendUrl(savedBackendUrl);
+    
+    if (savedUrl) {
+      setBackendUrl(savedUrl);
     }
     if (savedEncryptKey) {
       setEncryptKey(savedEncryptKey);
@@ -26,21 +28,22 @@ function SettingsPage() {
   }, []);
 
   const handleSaveBackendSettings = () => {
-    if (isCustomBackend && !backendUrl) {
-      showInfo("Vui lòng nhập URL backend");
-      return;
-    }
-    if (isCustomBackend && !urlRegex.test(backendUrl)) {
-      showInfo("URL backend không hợp lệ");
-      return;
-    }
-
-    if (isCustomBackend && !encryptKey) {
-      showInfo("Vui lòng nhập Encryption Key");
-      return;
-    }
-
     if (isCustomBackend) {
+      if (!backendUrl) {
+        showInfo("Please enter a backend URL");
+        return;
+      }
+
+      if (!urlRegex.test(backendUrl)) {
+        showInfo("Invalid backend URL format");
+        return;
+      }
+
+      if (!encryptKey) {
+        showInfo("Please enter an Encryption Key");
+        return;
+      }
+
       localStorage.setItem("custom_backend_url", backendUrl);
       localStorage.setItem("custom_backend_encrypt_key", encryptKey);
       localStorage.setItem("use_custom_backend", "true");
@@ -50,20 +53,20 @@ function SettingsPage() {
       localStorage.setItem("use_custom_backend", "false");
     }
 
-    showSuccess("Đã lưu cài đặt backend");
+    showSuccess("Backend settings saved successfully");
   };
 
   const settingsSections = [
     {
       id: "backend",
-      title: "Cấu hình Backend",
+      title: "Backend Configuration",
       icon: <Server size={20} />,
-      description: `Tùy chỉnh kết nối đến máy chủ backend`,
+      description: "Configure connection to backend server",
       customContent: (
         <div className="space-y-4">
           <div className="form-control">
             <label className="label cursor-pointer">
-              <span className="label-text">Sử dụng backend tùy chỉnh</span>
+              <span className="label-text">Use custom backend</span>
               <input
                 type="checkbox"
                 className="toggle toggle-primary"
@@ -77,7 +80,7 @@ function SettingsPage() {
             <>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">URL Backend</span>
+                  <span className="label-text">Backend URL</span>
                 </label>
                 <input
                   type="text"
@@ -116,7 +119,7 @@ function SettingsPage() {
 
               <label className="label">
                 <span className="label-text-alt text-warning">
-                  ⚠️ Chỉ thay đổi nếu bạn biết mình đang làm gì
+                  ⚠️ Only change these settings if you know what you're doing
                 </span>
               </label>
             </>
@@ -126,7 +129,7 @@ function SettingsPage() {
             className="btn btn-primary w-full"
             onClick={handleSaveBackendSettings}
           >
-            Lưu cài đặt Backend
+            Save Backend Settings
           </button>
         </div>
       )
@@ -137,37 +140,24 @@ function SettingsPage() {
     <div className="max-w-4xl mx-auto p-4 md:p-6 min-h-screen bg-base-100">
       <div className="flex items-center gap-3 mb-8">
         <Settings2 className="w-8 h-8 text-primary" />
-        <h1 className="text-2xl font-bold">Cài đặt</h1>
+        <h1 className="text-2xl font-bold">Settings</h1>
       </div>
 
       <div className="space-y-6">
         {settingsSections.map((section) => (
           <div
             key={section.id}
-            className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow"
+            className="card bg-base-200 shadow-xl"
           >
             <div className="card-body">
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-2 mb-4">
                 {section.icon}
                 <h2 className="card-title">{section.title}</h2>
               </div>
-              <p className="text-base-content/70 mb-4">{section.description}</p>
-              
-              {section.customContent ? (
-                section.customContent
-              ) : (
-                <div className="space-y-4">
-                  {section.items.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-3 bg-base-200 rounded-lg hover:bg-base-300 transition-colors cursor-pointer"
-                    >
-                      <span className="font-medium">{item.label}</span>
-                      <span className="text-base-content/70">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <p className="text-sm text-base-content/70 mb-4">
+                {section.description}
+              </p>
+              {section.customContent}
             </div>
           </div>
         ))}
