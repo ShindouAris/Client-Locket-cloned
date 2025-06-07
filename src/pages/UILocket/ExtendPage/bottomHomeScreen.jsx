@@ -49,16 +49,12 @@ const BottomHomeScreen = () => {
     }, 500);
   };
 
-  // const handleDeleteImage = (id) => {
-  //   const updated = recentPosts.filter((p) => p.id !== id);
-  //   setRecentPosts(updated);
-  //   localStorage.setItem("uploadedMoments", JSON.stringify(updated));
-  //   showSuccess("Xóa ảnh thành công!");
-  //   handleCloseMedia();
-  // };
-
   const handleDeleteImage = (id) => {
-    alert("Đang phát triển..");
+    const updated = recentPosts.filter((p) => p.id !== id);
+    setRecentPosts(updated);
+    localStorage.setItem("uploadedMoments", JSON.stringify(updated));
+    showSuccess("Xóa ảnh thành công!");
+    handleCloseMedia();
   };
 
   return (
@@ -88,8 +84,15 @@ const BottomHomeScreen = () => {
         }`}
       >
         {recentPosts.length === 0 ? (
-          <div className="w-full h-full text-center text-lg text-base-content font-semibold">
-            Tính năng này chưa được hỗ trợ bởi backend custom
+          <div className="w-full h-full flex flex-col items-center justify-center text-center p-4">
+            <img 
+              src="/gomen.png" 
+              alt="No images"
+              className="w-48 h-48 object-contain opacity-50 mb-4"
+            />
+            <div className="text-lg text-base-content/70 font-semibold">
+              Chưa có ảnh nào được đăng, hãy đăng ảnh để xem nhé!
+            </div>
           </div>
         ) : (
           recentPosts.map((item) => (
