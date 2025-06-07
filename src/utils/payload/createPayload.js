@@ -1,9 +1,5 @@
 import { showError } from "../../components/Toast";
 import { getCurrentUserTokenAndUid } from "../auth";
-import {
-  prepareMediaInfo,
-  uploadToCloudinary,
-} from "../cloudinary/uploadFileAndGetInfo";
 
 export const createRequestPayload = (mediaInfo, caption, selectedColors) => {
   // Lấy token bằng getToken()
@@ -137,14 +133,13 @@ export const createRequestPayloadV4 = async (
       return [];
     }
 
-    const { idToken, localId, refreshToken } = auth;
+    const { idToken, localId } = auth;
 
-    // Upload file & prepare media info
-    const fileData = await uploadToCloudinary(selectedFile, previewType);
-    const mediaInfo = prepareMediaInfo(fileData);
-
-    // Add the original file to mediaInfo
-    mediaInfo.file = selectedFile;
+    // Prepare media info with the file
+    const mediaInfo = {
+      type: previewType,
+      file: selectedFile
+    };
 
     // Prepare options data
     const optionsData = {
@@ -161,7 +156,7 @@ export const createRequestPayloadV4 = async (
 
     // Create final payload
     const payload = {
-      userData: { idToken: idToken, localId },
+      userData: { idToken, localId },
       options: optionsData,
       model: "Version-UploadmediaV3.1",
       mediaInfo,

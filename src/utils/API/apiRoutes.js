@@ -27,8 +27,6 @@ const initializeApiUrl = async () => {
 initializeApiUrl();
 setInterval(initializeApiUrl, 30000);
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-
 const LOCKET_URL = "/locket";
 const LOCKET_PRO = "/locketpro";
 
@@ -82,8 +80,4 @@ export const API_URL = {
   SUBCRIBE: createDbApiUrlString(`${LOCKET_PRO}/subscribe`),
   REGISTER_USER_PLANS: createDbApiUrlString(`${LOCKET_PRO}/user-plans/register-free`),
   GET_USER_PLANS: createDbApiUrlString(`${LOCKET_PRO}/user-plans`),
-
-  // Cloudinary endpoints
-  UPLOAD_IMAGE_TO_CLOUD: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-  UPLOAD_VIDEO_TO_CLOUD: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
 };

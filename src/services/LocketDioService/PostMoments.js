@@ -115,45 +115,16 @@ export const PostMoments = async (payload) => {
       formData.append("videos", mediaInfo.file);
     }
 
-    // Add metadata
-    formData.append("metadata", JSON.stringify({
-      type: fileType,
-      url: mediaInfo.url,
-      public_id: mediaInfo.public_id,
-      size: mediaInfo.size,
-      ...(fileType === "image" 
-        ? {
-            format: mediaInfo.format,
-            width: mediaInfo.width,
-            height: mediaInfo.height,
-          }
-        : {
-            duration: mediaInfo.duration,
-            thumbnail: mediaInfo.thumbnail,
-          }
-      )
-    }));
-
-    // Add overlay options
-    formData.append("overlay", JSON.stringify({
-      overlay_id: payload.options.overlay_id || "",
-      type: payload.options.type || "default",
-      icon: payload.options.icon || "",
-      text_color: payload.options.text_color || "#FFFFFF",
-      color_top: payload.options.color_top || "",
-      color_bottom: payload.options.color_bottom || ""
-    }));
-
     // Send request with FormData
     const response = await axios.post(utils.API_URL.UPLOAD_MEDIA_URL, formData, {
       headers: { "Content-Type": "multipart/form-data" }
     });
 
     clearTimeout(timeoutId);
-    console.log("✅ Upload thành công:", response.data);
+    console.log("✅ Upload successful:", response.data);
     return response.data;
   } catch (error) {
-    console.error("❌ Lỗi khi upload:", error.response?.data || error.message);
+    console.error("❌ Upload error:", error.response?.data || error.message);
     if (error.response) {
       console.error("📡 Server Error:", error.response);
     } else {

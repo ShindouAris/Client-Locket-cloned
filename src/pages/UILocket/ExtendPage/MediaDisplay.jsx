@@ -338,13 +338,14 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
             </button>
             <div className="w-8 h-16 bg-black/50 rounded-full flex items-center justify-center">
               <div 
-                className="w-1 h-12 bg-gray-300 rounded-full relative"
+                className="w-1 h-12 bg-gray-300 rounded-full relative flex items-center"
               >
                 <div
-                  className="absolute w-3 h-3 bg-white rounded-full transform -translate-x-1"
+                  className="absolute w-3 h-3 bg-white rounded-full"
                   style={{
                     top: `${((zoomLevel - 1) / (maxZoom - 1)) * 100}%`,
-                    transform: 'translateX(-50%) translateY(-50%)'
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)'
                   }}
                 />
               </div>
