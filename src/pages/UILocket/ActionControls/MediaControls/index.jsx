@@ -120,7 +120,7 @@ const MediaControls = () => {
     const { type: previewType } = preview || {};
     const isImage = previewType === "image";
     const isVideo = previewType === "video";
-    const maxFileSize = isImage ? 5 : 10;
+    const maxFileSize = isImage ? 5 : 25;
   
     if (isSizeMedia > maxFileSize) {
       showError(
