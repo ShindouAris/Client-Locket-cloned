@@ -171,7 +171,7 @@ const PostMoments = () => {
 
         <div className="text-left">
           <p className="text-sm text-error mt-2">
-            Hệ thống chỉ hỗ trợ ảnh tối đa 1MB và video tối đa 10MB. Nếu gặp lỗi
+            Hệ thống chỉ hỗ trợ ảnh tối đa 5MB và video tối đa 10MB. Nếu gặp lỗi
             khi tải lên, bạn có thể thử lại sau hoặc gửi ảnh/video qua
             Zalo/Messenger và tải lại.
             <Link to="/docs" className="underline">
