@@ -5,12 +5,13 @@ import BouncyLoader from "../Loading/Bouncy";
 import * as utils from "../../../utils";
 import { RiEmotionHappyLine } from "react-icons/ri";
 import { TbMoodCrazyHappy } from "react-icons/tb";
-import { getBackendNodes } from "../../../utils/backendConfig";
+import { getBackendNodes, isUsingCustomBackend, getCustomBackendUrl } from "../../../utils/backendConfig";
 
 const StatusServer = () => {
   const { useloading } = useApp();
   const { isStatusServer, setIsStatusServer } = useloading;
   const [nodeStatuses, setNodeStatuses] = useState([]); // Track status as array to maintain order
+  const [customNodeStatus, setCustomNodeStatus] = useState(null);
 
   useEffect(() => {
     const checkServer = async () => {
@@ -28,8 +29,23 @@ const StatusServer = () => {
           }
         }));
 
+        // Check custom backend if enabled
+        if (isUsingCustomBackend()) {
+          const customUrl = getCustomBackendUrl();
+          try {
+            const response = await axios.get(`${customUrl}/keepalive`, {
+              timeout: 5000
+            });
+            setCustomNodeStatus({ isUp: response.status === 200 });
+          } catch (error) {
+            setCustomNodeStatus({ isUp: false });
+          }
+        } else {
+          setCustomNodeStatus(null);
+        }
+
         setNodeStatuses(statuses);
-        setIsStatusServer(statuses.some(status => status.isUp));
+        setIsStatusServer(statuses.some(status => status.isUp) || (customNodeStatus?.isUp ?? false));
       } catch (error) {
         setIsStatusServer(false);
       }
@@ -41,11 +57,11 @@ const StatusServer = () => {
     // Set up periodic checks
     const interval = setInterval(checkServer, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [customNodeStatus?.isUp]);
 
-  // If there's only one node or custom backend is used, show simple status
+  // If there's only one node and no custom backend, show simple status
   const nodes = getBackendNodes();
-  if (nodes.length <= 1) {
+  if (nodes.length <= 1 && !isUsingCustomBackend()) {
     return (
       <div className="flex items-center gap-2 text-sm">
         {isStatusServer === null ? (
@@ -81,7 +97,7 @@ const StatusServer = () => {
     );
   }
 
-  // Show detailed status for multiple nodes
+  // Show detailed status for multiple nodes and/or custom backend
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-sm">
@@ -132,6 +148,20 @@ const StatusServer = () => {
             </span>
           </div>
         ))}
+        {customNodeStatus !== null && (
+          <div 
+            className={`flex items-center gap-2 p-2 rounded ${
+              customNodeStatus.isUp ? 'bg-green-100' : 'bg-red-100'
+            }`}
+          >
+            <div className={`w-2 h-2 rounded-full ${
+              customNodeStatus.isUp ? 'bg-green-500' : 'bg-red-500'
+            }`} />
+            <span className={customNodeStatus.isUp ? 'text-green-700' : 'text-red-700'}>
+              Node - Custom
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
