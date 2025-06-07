@@ -263,7 +263,7 @@ export default function RegisterMemberPage() {
                   <span className="text-xl">🔚</span>
                   <span className="font-medium text-gray-600">Kết thúc:</span>
                   <span className="text-gray-800">
-                    {userPlan.end_date || "∞"}
+                    {userPlan.end_date || "-- / -- / ----"}
                   </span>
                 </div>
 

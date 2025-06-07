@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         storage_limit: 999999
       },
       start_date: new Date().toLocaleDateString("vi-VN"),
-      end_date: "∞"
+      end_date: "-- / -- / ----"
     };
     localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
     return premiumPlan;
