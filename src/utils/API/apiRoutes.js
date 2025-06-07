@@ -8,13 +8,22 @@ const getBaseDbUrl = () => {
   return import.meta.env.VITE_BASE_DB_API_URL || import.meta.env.VITE_BASE_API_URL;
 };
 
-let BASE_API_URL = null;
+// Initialize with default backend URL
+let BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
 const BASE_DB_API_URL = getBaseDbUrl();
 
 const initializeApiUrl = async () => {
-  BASE_API_URL = await getBaseUrl();
+  try {
+    const newUrl = await getBaseUrl();
+    if (newUrl) {
+      BASE_API_URL = newUrl;
+    }
+  } catch (error) {
+    console.warn('Failed to initialize API URL:', error);
+  }
 };
 
+// Initialize custom backend URL if configured
 initializeApiUrl();
 setInterval(initializeApiUrl, 30000);
 
@@ -24,9 +33,7 @@ const LOCKET_URL = "/locket";
 const LOCKET_PRO = "/locketpro";
 
 const createApiUrlString = (path) => {
-  if (!BASE_API_URL) {
-    return path;
-  }
+  // Always use a backend URL - either custom or default
   return `${BASE_API_URL}${path}`;
 };
 
