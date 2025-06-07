@@ -22,7 +22,7 @@ const plans = [
       "Truy cập tính năng mới sớm hơn": true,
       "Toàn quyền tuỳ chỉnh mọi tính năng": true,
       "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": true,
+      "Quà tặng và ưu đãi đặc biệt": false,
     },
   },
   {
@@ -40,7 +40,7 @@ const plans = [
       "Truy cập tính năng mới sớm hơn": true,
       "Toàn quyền tuỳ chỉnh mọi tính năng": true,
       "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": true,
+      "Quà tặng và ưu đãi đặc biệt": false,
     },
   },
   {
@@ -58,7 +58,7 @@ const plans = [
       "Truy cập tính năng mới sớm hơn": true,
       "Toàn quyền tuỳ chỉnh mọi tính năng": true,
       "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": true,
+      "Quà tặng và ưu đãi đặc biệt": false,
     },
   },
   {
@@ -76,7 +76,7 @@ const plans = [
       "Truy cập tính năng mới sớm hơn": true,
       "Toàn quyền tuỳ chỉnh mọi tính năng": true,
       "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": true,
+      "Quà tặng và ưu đãi đặc biệt": false,
     },
   },
 ];
