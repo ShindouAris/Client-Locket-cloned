@@ -4,7 +4,6 @@ import { GoServer } from "react-icons/go";
 import { LuServerCog } from "react-icons/lu";
 import { BsDatabaseCheck } from "react-icons/bs";
 import { getBackendNodes, isUsingCustomBackend, getCustomBackendUrl } from '../../../utils/backendConfig';
-import { API_URL } from '../../../utils/API/apiRoutes';
 
 const NodeInfo = () => {
   const [nodeStatuses, setNodeStatuses] = useState([]);
@@ -14,7 +13,7 @@ const NodeInfo = () => {
   const measureLatency = async (url) => {
     try {
       const startTime = performance.now();
-      const response = await axios.get(`${url}/keepalive`, {
+      const response = await axios.head(`${url}/keepalive`, {
         timeout: 5000
       });
       const endTime = performance.now();
@@ -30,6 +29,10 @@ const NodeInfo = () => {
         latency: 'N/A',
       };
     }
+  };
+
+  const randomIntInRange = (a, b) => {
+    return Math.floor(Math.random() * (b - a + 1)) + a;
   };
 
   const checkNodes = async () => {
@@ -59,7 +62,7 @@ const NodeInfo = () => {
         setCustomNodeStatus(null);
       }
 
-      // Check DB API server using the configured URL from apiRoutes
+      
       try {
         const dbApiUrl = import.meta.env.VITE_BASE_DB_API_URL || import.meta.env.VITE_BASE_API_URL;
         const status = await measureLatency(dbApiUrl);
@@ -110,7 +113,7 @@ const NodeInfo = () => {
       case 'db':
         return "/db.png";
       default:
-        return "/node.png";
+        return `/node_random_image${randomIntInRange(1, 4)}.png`;
     }
   };
 
@@ -148,13 +151,13 @@ const NodeInfo = () => {
   return (
     <div className="p-6 flex flex-col items-center">
       <div className="w-full max-w-3xl">
-        <h2 className="text-2xl font-bold mb-4">Node Health Dashboard</h2>
+        <h2 className="text-2xl font-bold mb-4">Bảng thông tin trạng thái hoạt động của máy chủ</h2>
         <div className="mb-6 p-4 bg-blue-50 rounded border border-blue-200">
-          <p className="text-blue-700">Real-time Node Monitoring</p>
+          <p className="text-blue-700">Theo dõi trạng thái hoạt động của máy chủ</p>
           <p className="text-sm text-blue-600">
-            This dashboard shows the health status of all backend nodes. 
-            Latency is measured in real-time using performance metrics. 
-            Data is updated every 5 minutes.
+          Bảng thông tin này hiển thị trạng thái hoạt động của tất cả máy chủ.
+          Độ trễ được đo theo thời gian thực bằng cách sử dụng số liệu hiệu suất.
+          Dữ liệu được cập nhật sau mỗi 5 phút.
           </p>
         </div>
         
