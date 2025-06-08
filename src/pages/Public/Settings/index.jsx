@@ -200,6 +200,8 @@ function SettingsPage() {
                   className="input input-bordered w-full"
                   value={backendUrl}
                   onChange={(e) => setBackendUrl(e.target.value)}
+                  autoComplete="off"
+                  data-lpignore="true"
                 />
               </div>
 
@@ -214,10 +216,11 @@ function SettingsPage() {
                     className="input input-bordered w-full pr-10"
                     value={encryptKey}
                     onChange={(e) => setEncryptKey(e.target.value)}
+                    autoComplete="new-password"
                     autoCorrect="off"
-                    autoComplete="off"
                     autoCapitalize="off"
                     spellCheck="false"
+                    data-lpignore="true"
                   />
                   <button
                     type="button"
