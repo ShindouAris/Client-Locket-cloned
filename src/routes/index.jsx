@@ -12,6 +12,7 @@ import PrivacyPolicy from "../pages/Public/PrivacyPolicy";
 import RegisterMemberPage from "../pages/Public/RegisterMemberPage";
 import Timeline from "../pages/Public/Timeline";
 import CameraCapture from "../pages/UILocket";
+import NodeInfo from "../pages/Auth/Nodeinfo";
 
 const APP_NAME = "Locket Pro - Đăng ảnh & Video lên Locket";
 
@@ -29,7 +30,7 @@ const publicRoutes = [
   { path: "/testv1", component: CameraCapture, title: `${APP_NAME} | Test` },
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
-  // { path: "/testv2", component: Docs, title: `${APP_NAME} | Đăng Moment Mới` },
+  
 ];
 
 // 📌 Các route yêu cầu đăng nhập
@@ -45,6 +46,7 @@ const authRoutes = [
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
   { path: "/locket", component: CameraCapture, title: `${APP_NAME} | Locket` },
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
+  { path: "/nodeinfo", component: NodeInfo, title: `${APP_NAME} | Node Info` },
 ];
 
 // 📌 Các route dành cho locket

@@ -24,6 +24,7 @@ import {
 import { showToast } from "../Toast";
 import * as ultils from "../../utils";
 import { useApp } from "../../context/AppContext";
+import { TbServerBolt } from "react-icons/tb";
 import { AuthContext } from "../../context/AuthLocket";
 
 const Sidebar = () => {
@@ -205,6 +206,19 @@ const Sidebar = () => {
                     onClick={() => setIsSidebarOpen(false)}
                   >
                     <Settings2 size={22} /> Cài đặt
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/nodeinfo"
+                    className={`flex items-center px-3 py-3 rounded-lg transition ${
+                      location.pathname === "/nodeinfo"
+                        ? "bg-base-300"
+                        : "hover:bg-base-200"
+                    }`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <TbServerBolt size={22} /> Node Info
                   </Link>
                 </li>
                 <li>
