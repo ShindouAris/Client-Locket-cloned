@@ -128,7 +128,7 @@ export default function ModalRegisterMember() {
           <button
             className="btn btn-primary btn-sm px-5"
             onClick={() => {
-              alert("Vui lòng liên hệ quản trị viên để nâng cấp gói đăng ký.");
+              alert("Gói nào cũng như nhau bấm làm gì.");
             }}
           >
             Tiếp tục
