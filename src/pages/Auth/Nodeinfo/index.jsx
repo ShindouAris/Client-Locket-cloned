@@ -9,6 +9,7 @@ const NodeInfo = () => {
   const [nodeStatuses, setNodeStatuses] = useState([]);
   const [customNodeStatus, setCustomNodeStatus] = useState(null);
   const [dbApiStatus, setDbApiStatus] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const measureLatency = async (url) => {
     try {
@@ -37,6 +38,7 @@ const NodeInfo = () => {
 
   const checkNodes = async () => {
     try {
+      setIsLoading(true);
       // Get all configured backend nodes
       const nodes = getBackendNodes();
       const statuses = await Promise.all(nodes.map(async (node, index) => {
@@ -83,6 +85,8 @@ const NodeInfo = () => {
       setNodeStatuses(statuses);
     } catch (error) {
       console.error('Error checking nodes:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,10 +121,26 @@ const NodeInfo = () => {
     }
   };
 
+  const LoadingCard = () => (
+    <div className="relative flex flex-col items-center justify-center p-6 rounded-lg w-full min-h-[200px] overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100">
+      <div className="relative w-24 h-24 mb-4">
+        <img 
+          src="/node_random_image1.png" 
+          alt="Server" 
+          className="w-full h-full object-contain animate-pulse"
+        />
+      </div>
+      <div className="text-center">
+        <h3 className="text-lg font-medium text-blue-700 mb-2">Đang kiểm tra máy chủ...</h3>
+        <p className="text-sm text-blue-600 opacity-75">Chờ một chút, Mafuyu đang kiểm tra máy chủ...</p>
+      </div>
+    </div>
+  );
+
   const NodeCard = ({ data }) => (
     <div className={`relative flex items-center gap-4 p-6 rounded-lg w-full min-h-[120px] overflow-hidden ${
       data.isUp ? 'bg-green-100' : 'bg-red-100'
-    }`}>
+    } animate-fadeIn`}>
       {/* Background Image */}
       <div 
         className="absolute right-0 top-0 bottom-0 w-32 opacity-60"
@@ -162,15 +182,21 @@ const NodeInfo = () => {
         </div>
         
         <div className="flex flex-col space-y-4">
-          {dbApiStatus && (
-            <NodeCard data={dbApiStatus} />
+          {isLoading ? (
+            <LoadingCard />
+          ) : (
+            <>
+              {dbApiStatus && (
+                <NodeCard data={dbApiStatus} />
+              )}
+              {customNodeStatus && (
+                <NodeCard data={customNodeStatus} />
+              )}
+              {nodeStatuses.map((node) => (
+                <NodeCard key={node.index} data={node} />
+              ))}
+            </>
           )}
-          {customNodeStatus && (
-            <NodeCard data={customNodeStatus} />
-          )}
-          {nodeStatuses.map((node) => (
-            <NodeCard key={node.index} data={node} />
-          ))}
         </div>
       </div>
     </div>
@@ -178,3 +204,23 @@ const NodeInfo = () => {
 };
 
 export default NodeInfo;
+
+// Add this at the end of the file
+const styles = document.createElement('style');
+styles.textContent = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+`;
+document.head.appendChild(styles);

@@ -227,7 +227,7 @@ const ScreenCustomeStudio = () => {
             onSelect={handleCustomeSelect}
           />
           <ThemesCustomes
-            title="🎨 New Custome by Dio"
+            title="🎨 New Custome by Kanade"
             presets={captionThemes.custome}
             onSelect={handleCustomeSelect}
           />
@@ -246,31 +246,8 @@ const ScreenCustomeStudio = () => {
               🎨 Caption ? - Sắp ra mắt
             </h2>
             <div className="flex flex-wrap gap-4 pt-2 pb-5 justify-start text-base-content">
-              <p>Tung tung tung tung sahur 🎉</p>
               <p>
                 Phiên bản sắp tới <strong>V2.0.8</strong>
-              </p>
-              <p>
-                Theo dõi kênh{" "}
-                <a
-                  className="text-primary font-semibold underline hover:text-primary-focus"
-                  href="https://t.me/ddevdio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Telegram
-                </a>
-              </p>
-              <p>
-                Tham gia nhóm Discord{" "}
-                <a
-                  className="text-primary font-semibold underline hover:text-primary-focus"
-                  href="https://discord.gg/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Discord
-                </a>
               </p>
               <p>
                 Mọi đóng góp hỗ trợ xin nhận tại{" "}
