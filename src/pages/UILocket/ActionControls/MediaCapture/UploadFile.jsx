@@ -12,7 +12,6 @@ const UploadFile = () => {
 
   //Handle tải file
   const handleFileChange = useCallback(async (event) => {
-    setCameraActive(false);
     setSelectedFile(null);
     const rawFile = event.target.files[0];
     if (!rawFile) return;
@@ -25,15 +24,45 @@ const UploadFile = () => {
 
     if (!fileType) {
       showToast("error", "Chỉ hỗ trợ ảnh và video.");
+      URL.revokeObjectURL(localPreviewUrl);
       return;
     }
-    setPreview({ type: fileType, data: localPreviewUrl }); // Preview local ngay
 
-    // Convert file size to MB
-    const fileSizeInMB = rawFile.size / (1024 * 1024); // size in MB
-    setSizeMedia(fileSizeInMB.toFixed(2)); // Store the size in MB, rounded to 2 decimal places
+    if (fileType === "video") {
+      try {
+        const duration = await new Promise((resolve, reject) => {
+          const video = document.createElement("video");
+          video.preload = "metadata";
+          video.src = localPreviewUrl;
+          video.onloadedmetadata = () => {
+            resolve(video.duration);
+            video.remove();
+          };
+          video.onerror = () => {
+            reject(new Error("Video không hợp lệ."));
+            video.remove();
+          };
+        });
+
+        if (duration > 10) {
+          showToast("error", "Video quá dài. Vui lòng chọn video có kích thước nhỏ hơn 10s.");
+          URL.revokeObjectURL(localPreviewUrl);
+          return;
+        }
+      } catch (error) {
+        showToast("error", error.message);
+        URL.revokeObjectURL(localPreviewUrl);
+        return;
+      }
+    }
+
+    // Only disable camera and set states if all validations pass
+    setCameraActive(false);
+    setPreview({ type: fileType, data: localPreviewUrl });
+    const fileSizeInMB = rawFile.size / (1024 * 1024); 
+    setSizeMedia(fileSizeInMB.toFixed(2)); 
     setIsCaptionLoading(true);
-    setSelectedFile(rawFile); // Lưu file đã chọn
+    setSelectedFile(rawFile); 
   }, []);
   return (
     <>
