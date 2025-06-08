@@ -1,6 +1,5 @@
 import React from "react";
-import { TbMoodCrazyHappy } from "react-icons/tb";
-import { RiEmotionHappyLine } from "react-icons/ri";
+import { Check, X } from "lucide-react";
 import { useApp } from "../../../context/AppContext";
 
 const MediaSizeInfo = () => {
@@ -9,7 +8,7 @@ const MediaSizeInfo = () => {
 
   const isImage = preview?.type === "image";
   const isVideo = preview?.type === "video";
-  const isTooBig = isImage ? isSizeMedia > 5 : isVideo ? isSizeMedia > 10 : false;
+  const isTooBig = isImage ? isSizeMedia > 5 : isVideo ? isSizeMedia > 25 : false;
   const colorClass = isTooBig ? "text-red-500" : "text-green-500";
 
   return (
@@ -19,9 +18,9 @@ const MediaSizeInfo = () => {
           Dung lượng {isImage ? "ảnh" : "video"} là{" "}
           <span className="font-semibold underline">{isSizeMedia} MB</span>
           {isTooBig ? (
-            <TbMoodCrazyHappy className="text-lg" />
+            <X  className="text-lg" />
           ) : (
-            <RiEmotionHappyLine className="text-lg" />
+            <Check className="text-lg" />
           )}
         </div>
       ) : null}
