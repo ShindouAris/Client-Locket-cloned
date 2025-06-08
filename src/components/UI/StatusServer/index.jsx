@@ -3,6 +3,8 @@ import axios from "axios";
 import { useApp } from "../../../context/AppContext";
 import BouncyLoader from "../Loading/Bouncy";
 import * as utils from "../../../utils";
+import { GoServer } from "react-icons/go";
+import { LuServerCog } from "react-icons/lu";
 import { RiEmotionHappyLine } from "react-icons/ri";
 import { TbMoodCrazyHappy } from "react-icons/tb";
 import { getBackendNodes, isUsingCustomBackend, getCustomBackendUrl } from "../../../utils/backendConfig";
@@ -144,7 +146,7 @@ const StatusServer = () => {
               isUp ? 'bg-green-500' : 'bg-red-500'
             }`} />
             <span className={isUp ? 'text-green-700' : 'text-red-700'}>
-              Node - {index + 1}
+              <GoServer  />Node - {index + 1}
             </span>
           </div>
         ))}
@@ -158,7 +160,7 @@ const StatusServer = () => {
               customNodeStatus.isUp ? 'bg-green-500' : 'bg-red-500'
             }`} />
             <span className={customNodeStatus.isUp ? 'text-green-700' : 'text-red-700'}>
-              Node - Custom
+              <LuServerCog /> Node - Custom
             </span>
           </div>
         )}
