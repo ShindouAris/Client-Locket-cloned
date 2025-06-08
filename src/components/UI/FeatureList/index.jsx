@@ -20,7 +20,7 @@ const features = [
   },
   {
     icon: <Video className="w-8 h-8 text-red-500" />,
-    title: "Quay video - Truy cập sớm",
+    title: "Quay video",
     description: "Giữ nút để quay video tối đa 10 giây.",
   },
   {
