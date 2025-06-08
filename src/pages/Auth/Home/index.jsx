@@ -57,7 +57,8 @@ const AuthHome = () => {
         <div className="p-6 bg-base-100 shadow-lg rounded-xl text-center">
           <h2 className="text-xl font-semibold mb-3">🔒 Bảo mật an toàn</h2>
           <p className="text-base-content">
-            Dữ liệu của bạn được bảo vệ với công nghệ tiên tiến....? BE cũ k public lmao
+            Với việc bạn có thể kiểm soát dữ liệu của bạn bằng cách sử dụng máy chủ của riêng bạn,
+            bạn có thể yên tâm về việc bảo mật dữ liệu của bạn.
           </p>
         </div>
       </div>
