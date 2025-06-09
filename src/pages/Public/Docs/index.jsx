@@ -74,7 +74,7 @@ const Docs = () => {
         <ul className="list-inside text-sm">
           <li>
             <strong>Bước 1:</strong> Kiểm tra kích thước tệp và đảm bảo ảnh
-            không vượt quá 1MB và video không quá 10MB.
+            không vượt quá 10MB và video không quá 25MB.
           </li>
           <li>
             <strong>Bước 2:</strong> Nếu tệp quá lớn, hãy thử nén ảnh hoặc video

@@ -29,15 +29,15 @@ export const AuthProvider = ({ children }) => {
   });
   // Load userPlan từ localStorage ngay khi component mount
   const [userPlan, setUserPlan] = useState(() => {
-    const premiumPlan = {
-      uid: "premium_user",
-      username: "premium_user",
-      display_name: "Premium User",
+    const proPlusPlan = {
+      uid: "pro_plus_user",
+      username: "pro_plus_user",
+      display_name: "Pro Plus User",
       profile_picture: "",
-      plan_id: "premium",
+      plan_id: "pro_plus",
       plan_info: {
-        id: "premium",
-        name: "Premium",
+        id: "pro_plus",
+        name: "Pro Plus",
         features: {
           custom_theme: true,
           select_friends: true,
@@ -54,8 +54,8 @@ export const AuthProvider = ({ children }) => {
       start_date: new Date().toLocaleDateString("vi-VN"),
       end_date: "-- / -- / ----"
     };
-    localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
-    return premiumPlan;
+    localStorage.setItem("userPlan", JSON.stringify(proPlusPlan));
+    return proPlusPlan;
   });
 
   // ✅ Auto refresh token mỗi 50 phút hoặc khi token hết hạn

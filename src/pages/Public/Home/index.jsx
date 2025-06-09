@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const words = [
   "Welcome to Locket Kanade! 🚀",
   "Tuỳ chỉnh theo sở thích! ✨",
-  "Crack bởi Kanade! 🔥"
+  "Patch bởi Kanade! 🔥"
 ];
 
 const Home = () => {
