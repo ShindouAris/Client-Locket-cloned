@@ -73,14 +73,14 @@ const NodeInfo = () => {
         setDbApiStatus({
           ...status,
           type: 'db',
-          name: 'DB API Server',
+          name: 'Cơ sở dữ liệu',
         });
       } catch (error) {
         setDbApiStatus({
           isUp: false,
           latency: 'N/A',
           type: 'db',
-          name: 'DB API Server',
+          name: 'Cơ sở dữ liệu',
         });
       }
 
