@@ -13,22 +13,10 @@ const getEncryptionKey = () => {
 
 export const encryptLoginData = (email, password) => {
     try {
-        const HASH_SECRET_KEY = getEncryptionKey();
+        // We no longer encrypt the login data
 
-        // Convert the strings to WordArray objects
-        const emailWordArray = CryptoJS.enc.Utf8.parse(email);
-        const passwordWordArray = CryptoJS.enc.Utf8.parse(password);
-
-        // Encrypt using AES with specific configuration
-        const encryptedEmail = CryptoJS.AES.encrypt(email, HASH_SECRET_KEY, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.Pkcs7
-        }).toString();
-
-        const encryptedPassword = CryptoJS.AES.encrypt(password, HASH_SECRET_KEY, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.Pkcs7
-        }).toString();
+        const encryptedEmail = email;
+        const encryptedPassword = password;
 
         return { encryptedEmail, encryptedPassword };
     } catch (error) {
