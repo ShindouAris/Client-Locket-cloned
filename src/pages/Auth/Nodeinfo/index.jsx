@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, version } from 'react';
 import axios from 'axios';
 import { GoServer } from "react-icons/go";
 import { LuServerCog } from "react-icons/lu";
@@ -11,10 +11,10 @@ const NodeInfo = () => {
   const [dbApiStatus, setDbApiStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const measureLatency = async (url) => {
+  const measureLatency = async (url, endpointcheck = "keepalive", method = "head") => {
     try {
       const startTime = performance.now();
-      const response = await axios.head(`${url}/keepalive`, {
+      const response = await axios[method](`${url}/${endpointcheck}`, {
         timeout: 5000
       });
       const endTime = performance.now();
@@ -23,6 +23,8 @@ const NodeInfo = () => {
       return {
         isUp: response.status === 200,
         latency: `${latency}ms`,
+        version: response.data.version || "N/A",
+        uptime: response.data.uptime || 0,
       };
     } catch (error) {
       return {
@@ -42,7 +44,7 @@ const NodeInfo = () => {
       // Get all configured backend nodes
       const nodes = getBackendNodes();
       const statuses = await Promise.all(nodes.map(async (node, index) => {
-        const status = await measureLatency(node);
+        const status = await measureLatency(node, "keepalive", "get");
         return {
           index,
           ...status,
@@ -54,7 +56,7 @@ const NodeInfo = () => {
       // Check custom backend if enabled
       if (isUsingCustomBackend()) {
         const customUrl = getCustomBackendUrl();
-        const status = await measureLatency(customUrl);
+        const status = await measureLatency(customUrl, "keepalive", "get");
         setCustomNodeStatus({
           ...status,
           type: 'custom',
@@ -66,8 +68,8 @@ const NodeInfo = () => {
 
       
       try {
-        const dbApiUrl = import.meta.env.VITE_BASE_DB_API_URL || import.meta.env.VITE_BASE_API_URL;
-        const status = await measureLatency(dbApiUrl);
+        const dbApiUrl = import.meta.env.VITE_BASE_API_URL_DB;
+        const status = await measureLatency(dbApiUrl, "status", "get");
         setDbApiStatus({
           ...status,
           type: 'db',
@@ -98,6 +100,26 @@ const NodeInfo = () => {
     const interval = setInterval(checkNodes, 300000);
     return () => clearInterval(interval);
   }, []);
+
+  const formatUptime = (uptime) => {
+    if (uptime !== "N/A" && uptime !== 0){
+      const now = Date.now();
+      const seconds = Math.floor((now - uptime * 1000) / 1000);
+      if (seconds < 60) return `${seconds} giây trước`;
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return `${minutes} phút trước`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} giờ trước`;
+      const days = Math.floor(hours / 24);
+      if (days < 30) return `${days} ngày trước`;
+      const months = Math.floor(days / 30);
+      if (months < 12) return `${months} tháng trước`;
+      const years = Math.floor(months / 12);
+      return `${years} năm trước`;
+    } else {
+      return "N/A";
+    }
+  };
 
   const getNodeIcon = (type) => {
     switch (type) {
@@ -161,6 +183,8 @@ const NodeInfo = () => {
           <span className={`flex items-center gap-2 text-lg font-medium ${data.isUp ? 'text-green-700' : 'text-red-700'}`}>
             {getNodeIcon(data.type)} {data.name}
           </span>
+          <span className="text-base text-gray-600 mt-2">Version: {data.version}</span>
+          <span className="text-base text-gray-600 mt-2">Uptime: {formatUptime(data.uptime)}</span>
           <span className="text-base text-gray-600 mt-2">Latency: {data.latency}</span>
           <span className="text-sm text-gray-500 mt-1">Last checked: {new Date().toLocaleString()}</span>
         </div>
