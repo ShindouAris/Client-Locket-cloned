@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import Hourglass from "../../../components/UI/Loading/hourglass.jsx";
 import MediaSizeInfo from "../../../components/UI/MediaSizeInfo/index.jsx";
 import { defaultPostOverlay } from "../../../storages/usePost.js";
+import { validate_response_data } from "../../../utils/security.js";
 
 const PostMoments = () => {
   const { post, useloading } = useApp();
@@ -68,10 +69,6 @@ const PostMoments = () => {
     setSelectedFile(rawFile);
   }, []);
 
-  // const handleSubmit = async () => {
-  //   showError("Server quá tải...")
-  // };
-
   const handleSubmit = async () => {
     if (!selectedFile) {
       showToast("error", "Không có dữ liệu để tải lên.");
@@ -88,34 +85,32 @@ const PostMoments = () => {
         selectedFile,
         preview.type,
         postOverlay
-        // audience,
-        // selectedRecipients
       );
 
       if (!payload) {
         throw new Error("Không tạo được payload. Hủy tiến trình tải lên.");
       }
-      // console.log("Payload:", payload);
 
       showToast("info", `Đang tạo bài viết !`);
-      // Gọi API upload
       const response = await lockerService.uploadMediaV2(payload);
 
-      // Lấy dữ liệu cũ
       const savedResponses = JSON.parse(
         localStorage.getItem("uploadedMoments") || "[]"
       );
 
-      // Chuẩn hoá data mới (response.data là 1 object, normalizeMoments nhận mảng, nên bọc vào mảng)
+      if (localStorage.getItem("use_custom_backend") === "true") {
+        if (!validate_response_data(response?.data?.result?.image_url) || !validate_response_data(response?.data?.result?.video_url)) {
+          // Bro's server response something wrong
+          return; // Do not save anything to localStorage due to risky data
+        }
+      }
+
       const normalizedNewData = utils.normalizeMoments([response?.data]);
 
-      // Ghép dữ liệu cũ với dữ liệu mới đã chuẩn hoá
       const updatedData = [...savedResponses, ...normalizedNewData];
 
-      // Lưu vào localStorage
       localStorage.setItem("uploadedMoments", JSON.stringify(updatedData));
 
-      // Cập nhật state với dữ liệu đã chuẩn hoá
       setRecentPosts(updatedData);
 
       showToast(

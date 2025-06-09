@@ -36,3 +36,12 @@ export const encryptLoginData = (email, password) => {
         throw new Error("Failed to encrypt login data: " + error.message);
     }
 }; 
+
+export const validate_response_data = async (url) => {
+    const url_regex = /^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/[^\/]+\/o\/[^?]+(\?.*)?$/;
+
+    if (!url_regex.test(url)) {
+        return false;
+    }
+    return true;
+}
