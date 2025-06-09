@@ -5,7 +5,7 @@ const getBaseUrl = async () => {
 };
 
 const getBaseDbUrl = () => {
-  return import.meta.env.VITE_BASE_DB_API_URL || import.meta.env.VITE_BASE_API_URL;
+  return import.meta.env.VITE_BASE_API_URL_DB;
 };
 
 // Initialize with default backend URL
