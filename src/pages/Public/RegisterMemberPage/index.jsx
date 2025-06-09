@@ -5,6 +5,7 @@ import { useApp } from "../../../context/AppContext";
 import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
 import { fetchUserPlan } from "../../../services";
+import { registerFreePlan } from "../../../services/LocketDioService/getInfoPlans";
 // plans.js
 const plans = [
   {
@@ -18,65 +19,52 @@ const plans = [
       "Đăng không giới hạn ảnh/video": true,
       "Tuỳ chỉnh nền và trang trí đầy đủ": true,
       "Hỗ trợ tuỳ chỉnh nâng cao": true,
-      "Hỗ trợ ưu tiên": true,
-      "Truy cập tính năng mới sớm hơn": true,
       "Toàn quyền tuỳ chỉnh mọi tính năng": true,
-      "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": false,
+      "Giới hạn upload ảnh 3MB": true,
+      "Giới hạn upload video 7MB": true,
     },
   },
   {
-    id: "pro",
-    name: "Pro",
-    price: 1,
+    id: "premium_lite",
+    name: "Premium Lite",
+    price: 10000,
     duration_days: 30,
     max_uploads: 999999,
     storage_limit: 999999, // MB
     perks: {
-      "Đăng không giới hạn ảnh/video": true,
-      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
-      "Hỗ trợ tuỳ chỉnh nâng cao": true,
-      "Hỗ trợ ưu tiên": true,
-      "Truy cập tính năng mới sớm hơn": true,
-      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
-      "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": false,
+      "Mọi tính năng của gói Free": true,
+      "Không có quảng cáo": true,
+      "Giới hạn upload ảnh 5MB": true,
+      "Giới hạn upload video 10MB": true,
     },
   },
   {
     id: "premium",
     name: "Premium",
-    price: 1,
+    price: 17000,
     duration_days: 30,
     max_uploads: 999999,
     storage_limit: 999999, // MB
     perks: {
-      "Đăng không giới hạn ảnh/video": true,
-      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
-      "Hỗ trợ tuỳ chỉnh nâng cao": true,
+      "Mọi tính năng của gói Premium Lite": true,
+      "Không có quảng cáo": true,
       "Hỗ trợ ưu tiên": true,
-      "Truy cập tính năng mới sớm hơn": true,
-      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
-      "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": false,
+      "Giới hạn upload ảnh 7MB": true,
+      "Giới hạn upload video 20MB": true,
     },
   },
   {
     id: "pro_plus",
     name: "Pro Plus",
-    price: 1,
-    duration_days: 365,
+    price: 30000,
+    duration_days: 90,
     max_uploads: 999999,
     storage_limit: 999999, // MB
     perks: {
-      "Đăng không giới hạn ảnh/video": true,
-      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
-      "Hỗ trợ tuỳ chỉnh nâng cao": true,
-      "Hỗ trợ ưu tiên": true,
-      "Truy cập tính năng mới sớm hơn": true,
-      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
+      "Mọi tính năng của gói Premium": true,
+      "Không có quảng cáo": true,
       "Hỗ trợ ưu tiên 24/7": true,
-      "Quà tặng và ưu đãi đặc biệt": false,
+      "Tối đa giới hạn upload ảnh và video (5MB / 25MB)": true,
     },
   },
 ];

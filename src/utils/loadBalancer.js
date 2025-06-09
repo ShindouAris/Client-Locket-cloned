@@ -10,12 +10,49 @@ class LoadBalancer {
     this.nodePerformance = new Map(); // Track response times
     this.performanceWindow = 5; // Number of samples to keep
     this.nodeStats = new Map(); // Track system stats
+    this.activeNodePool = new Set(); // Track currently active nodes
+    this.maxActiveNodes = 5; // Maximum number of nodes to keep active at once
   }
 
   async initialize() {
-    await this.updateHealthyNodes();
+    await this.updateActiveNodePool();
     // Start periodic health checks
-    setInterval(() => this.updateHealthyNodes(), this.healthCheckInterval);
+    setInterval(() => this.updateActiveNodePool(), this.healthCheckInterval);
+  }
+
+  async updateActiveNodePool() {
+    const allNodes = getBackendNodes();
+    
+    // If we have fewer nodes than max, use all of them
+    if (allNodes.length <= this.maxActiveNodes) {
+      this.activeNodePool = new Set(allNodes);
+      await this.updateHealthyNodes();
+      return;
+    }
+
+    // Keep some existing good performers if we have them
+    const existingGoodNodes = [...this.activeNodePool].filter(node => 
+      !this.unhealthyNodes.has(node) && 
+      this.getAverageResponseTime(node) < 1000
+    ).slice(0, Math.floor(this.maxActiveNodes / 2));
+
+    // Fill remaining slots with random nodes we haven't tried recently
+    const remainingSlots = this.maxActiveNodes - existingGoodNodes.length;
+    const unusedNodes = allNodes.filter(node => 
+      !this.activeNodePool.has(node) || 
+      this.unhealthyNodes.has(node)
+    );
+    
+    // Randomly select remaining nodes
+    const newNodes = [];
+    while (newNodes.length < remainingSlots && unusedNodes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * unusedNodes.length);
+      newNodes.push(unusedNodes.splice(randomIndex, 1)[0]);
+    }
+
+    // Update active pool
+    this.activeNodePool = new Set([...existingGoodNodes, ...newNodes]);
+    await this.updateHealthyNodes();
   }
 
   updateNodePerformance(node, responseTime) {
@@ -70,9 +107,7 @@ class LoadBalancer {
   }
 
   async updateHealthyNodes() {
-    const allNodes = getBackendNodes();
     const now = Date.now();
-    
     if (now - this.lastHealthCheck < this.healthCheckInterval) {
       return;
     }
@@ -80,7 +115,7 @@ class LoadBalancer {
     this.lastHealthCheck = now;
     this.healthyNodes = [];
 
-    await Promise.all(allNodes.map(async (node) => {
+    await Promise.all([...this.activeNodePool].map(async (node) => {
       try {
         const startTime = Date.now();
         const [healthResponse, stats] = await Promise.all([
@@ -106,8 +141,10 @@ class LoadBalancer {
     }));
 
     if (this.healthyNodes.length === 0) {
-      this.healthyNodes = allNodes;
-      console.warn('All backend nodes are down! Falling back to all nodes.');
+      await this.updateActiveNodePool(); // Try to get a new set of nodes
+      if (this.healthyNodes.length === 0) {
+        this.healthyNodes = [...this.activeNodePool]; // Last resort fallback
+      }
     }
   }
 
