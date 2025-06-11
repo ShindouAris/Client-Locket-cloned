@@ -33,7 +33,19 @@ export const AuthProvider = ({ children }) => {
   const [userPlan, setUserPlan] = useState(() => {
     const saved = localStorage.getItem("userPlan");
     if (saved) {
-      return JSON.parse(saved);
+      try {
+        const parsedPlan = JSON.parse(saved);
+        // Ensure dates are properly formatted
+        if (parsedPlan.start_date && parsedPlan.start_date !== "∞") {
+          parsedPlan.start_date = new Date(parsedPlan.start_date).toLocaleDateString("vi-VN");
+        }
+        if (parsedPlan.end_date && parsedPlan.end_date !== "∞") {
+          parsedPlan.end_date = new Date(parsedPlan.end_date).toLocaleDateString("vi-VN");
+        }
+        return parsedPlan;
+      } catch (e) {
+        console.error("Error parsing saved plan:", e);
+      }
     }
     
     const freePlan = plans[0];
@@ -256,6 +268,67 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     setFriendDetails([]); // 🧼 Xoá dữ liệu cũ khi user thay đổi
   }, [user]);
+
+  // Add effect to auto fetch plan
+  useEffect(() => {
+    const fetchAndSetPlan = async () => {
+      if (!authTokens?.localId) {
+        // If no auth tokens, set default free plan
+        const freePlan = plans[0];
+        const defaultPlan = {
+          uid: "free_user",
+          username: "free_user",
+          display_name: "Free User",
+          plan_id: "free",
+          plan_info: {
+            id: "free",
+            name: freePlan.name,
+            features: freePlan.features,
+            max_uploads: freePlan.max_uploads,
+            max_video_size: freePlan.max_video_size,
+            max_image_size: freePlan.max_image_size,
+          },
+          start_date: new Date().toLocaleDateString("vi-VN"),
+          end_date: "∞"
+        };
+        setUserPlan(defaultPlan);
+        localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
+        return;
+      }
+
+      try {
+        const plan = await fetchUserPlan(authTokens.localId);
+        if (plan) {
+          setUserPlan(plan);
+          localStorage.setItem("userPlan", JSON.stringify(plan));
+        }
+      } catch (error) {
+        console.error("Error fetching plan:", error);
+        // On error, set default free plan
+        const freePlan = plans[0];
+        const defaultPlan = {
+          uid: "free_user",
+          username: "free_user",
+          display_name: "Free User",
+          plan_id: "free",
+          plan_info: {
+            id: "free",
+            name: freePlan.name,
+            features: freePlan.features,
+            max_uploads: freePlan.max_uploads,
+            max_video_size: freePlan.max_video_size,
+            max_image_size: freePlan.max_image_size,
+          },
+          start_date: new Date().toLocaleDateString("vi-VN"),
+          end_date: "∞"
+        };
+        setUserPlan(defaultPlan);
+        localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
+      }
+    };
+
+    fetchAndSetPlan();
+  }, [authTokens?.localId]); // Re-run when auth tokens change
 
   const resetAuthContext = () => {
     setUser(null);

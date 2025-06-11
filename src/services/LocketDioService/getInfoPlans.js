@@ -45,7 +45,19 @@ export const fetchUserPlan = async (userId) => {
     if (!userId) {
       const storedPlan = localStorage.getItem("userPlan");
       if (storedPlan) {
-        return JSON.parse(storedPlan);
+        try {
+          const parsedPlan = JSON.parse(storedPlan);
+          // Ensure dates are properly formatted
+          if (parsedPlan.start_date && parsedPlan.start_date !== "∞") {
+            parsedPlan.start_date = new Date(parsedPlan.start_date).toLocaleDateString("vi-VN");
+          }
+          if (parsedPlan.end_date && parsedPlan.end_date !== "∞") {
+            parsedPlan.end_date = new Date(parsedPlan.end_date).toLocaleDateString("vi-VN");
+          }
+          return parsedPlan;
+        } catch (e) {
+          console.error("Error parsing stored plan:", e);
+        }
       }
       // If no stored plan and no userId, return free plan
       return getDefaultFreePlan();
@@ -57,7 +69,6 @@ export const fetchUserPlan = async (userId) => {
     // Find the plan details from our plans data
     const planDetails = plans.find(p => p.id === planData.plan_id) || plans[0]; // Default to free plan if not found
 
-    // Transform the API response to match our frontend structure
     const userPlan = {
       uid: userId,
       username: userId,
@@ -71,7 +82,7 @@ export const fetchUserPlan = async (userId) => {
         max_video_size: planDetails.max_video_size,
         max_image_size: planDetails.max_image_size,
       },
-      start_date: new Date(planData.start_date).toLocaleDateString("vi-VN"),
+      start_date: planData.start_date ? new Date(planData.start_date * 1000).toLocaleDateString("vi-VN") : new Date().toLocaleDateString("vi-VN"),
       end_date: planData.end_date ? new Date(planData.end_date * 1000).toLocaleDateString("vi-VN") : "∞",
       qr_code: planData.qr_code
     };
