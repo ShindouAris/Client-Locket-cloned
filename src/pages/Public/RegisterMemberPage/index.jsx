@@ -89,7 +89,7 @@ export default function RegisterMemberPage() {
     setLastRefreshTime(now); // Cập nhật thời điểm bấm nút
 
     try {
-      const data = await fetchUserPlan();
+      const data = await fetchUserPlan(authTokens.idToken);
       if (data) {
         setUserPlan(data);
         showInfo("Đã cập nhật gói thành công!");
