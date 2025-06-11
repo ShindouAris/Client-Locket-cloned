@@ -8,6 +8,8 @@ import {
   fetchUserPlan,
   registerFreePlan,
 } from "../services";
+import { plans } from "../utils/plans";
+import axios from "axios";
 
 export const AuthContext = createContext();
 
@@ -27,35 +29,32 @@ export const AuthProvider = ({ children }) => {
     const saved = localStorage.getItem("friendDetails");
     return saved ? JSON.parse(saved) : [];
   });
-  // Load userPlan từ localStorage ngay khi component mount
+
   const [userPlan, setUserPlan] = useState(() => {
-    const proPlusPlan = {
-      uid: "pro_plus_user",
-      username: "pro_plus_user",
-      display_name: "Pro Plus User",
-      profile_picture: "",
-      plan_id: "pro_plus",
+    const saved = localStorage.getItem("userPlan");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    
+    const freePlan = plans[0];
+    const defaultPlan = {
+      uid: "free_user",
+      username: "free_user",
+      display_name: "Free User",
+      plan_id: "free",
       plan_info: {
-        id: "pro_plus",
-        name: "Pro Plus",
-        features: {
-          custom_theme: true,
-          select_friends: true,
-          create_post: true,
-          decorative: true,
-          background: true,
-          image_icon: true,
-          music_icon: true,
-          dev_tools: true
-        },
-        max_uploads: 999999,
-        storage_limit: 999999
+        id: "free",
+        name: freePlan.name,
+        features: freePlan.features,
+        max_uploads: freePlan.max_uploads,
+        max_video_size: freePlan.max_video_size,
+        max_image_size: freePlan.max_image_size,
       },
       start_date: new Date().toLocaleDateString("vi-VN"),
-      end_date: "-- / -- / ----"
+      end_date: "∞"
     };
-    localStorage.setItem("userPlan", JSON.stringify(proPlusPlan));
-    return proPlusPlan;
+    localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
+    return defaultPlan;
   });
 
   // ✅ Auto refresh token mỗi 50 phút hoặc khi token hết hạn

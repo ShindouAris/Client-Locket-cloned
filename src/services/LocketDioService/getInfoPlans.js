@@ -40,6 +40,17 @@ export const fetchUserPlan = async (userId) => {
       localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
       return premiumPlan;
     }
+
+    // If no userId provided, try to get from localStorage
+    if (!userId) {
+      const storedPlan = localStorage.getItem("userPlan");
+      if (storedPlan) {
+        return JSON.parse(storedPlan);
+      }
+      // If no stored plan and no userId, return free plan
+      return getDefaultFreePlan();
+    }
+
     const response = await axios.get(API_URL.GET_USER_SUBSCRIPTION(userId));
     const planData = response.data;
 
@@ -69,8 +80,32 @@ export const fetchUserPlan = async (userId) => {
     return userPlan;
   } catch (error) {
     console.error("Error fetching user plan:", error);
-    return null;
+    // On error, return free plan
+    return getDefaultFreePlan();
   }
+};
+
+// Helper function to get default free plan
+const getDefaultFreePlan = () => {
+  const freePlan = plans[0]; // Free plan is always first in the array
+  const defaultPlan = {
+    uid: "free_user",
+    username: "free_user",
+    display_name: "Free User",
+    plan_id: "free",
+    plan_info: {
+      id: "free",
+      name: freePlan.name,
+      features: freePlan.features,
+      max_uploads: freePlan.max_uploads,
+      max_video_size: freePlan.max_video_size,
+      max_image_size: freePlan.max_image_size,
+    },
+    start_date: new Date().toLocaleDateString("vi-VN"),
+    end_date: "∞"
+  };
+  localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
+  return defaultPlan;
 };
 
 export const registerFreePlan = async (user, idToken) => {
