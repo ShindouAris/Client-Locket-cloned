@@ -66,34 +66,34 @@ export default function RegisterMemberPage() {
     };
   }, [isModalRegMemberOpen, currentOrderId, paymentStatus?.isFinished]);
 
-  useEffect(() => {
-    let intervalId;
-    if (currentOrderId && !paymentStatus?.isFinished) {
-      intervalId = setInterval(async () => {
-        try {
-          const status = await checkPaymentStatus(currentOrderId);
-          setPaymentStatus(status);
-          if (status.isFinished) {
-            clearInterval(intervalId);
-            const newPlan = await fetchUserPlan(user.localId);
-            if (newPlan) {
-              setUserPlan(newPlan);
-              showInfo("Thanh toán thành công! Gói của bạn đã được kích hoạt.");
-              setIsModalRegMemberOpen(false);
-              localStorage.removeItem(PAYMENT_START_KEY);
-            }
-          }
-        } catch (error) {
-          console.error("Error checking payment status:", error);
-        }
-      }, 5000); // Check every 5 seconds
-    }
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [currentOrderId, paymentStatus?.isFinished]);
+  // useEffect(() => {
+  //   let intervalId;
+  //   if (currentOrderId && !paymentStatus?.isFinished) {
+  //     intervalId = setInterval(async () => {
+  //       try {
+  //         const status = await checkPaymentStatus(currentOrderId);
+  //         setPaymentStatus(status);
+  //         if (status.isFinished) {
+  //           clearInterval(intervalId);
+  //           const newPlan = await fetchUserPlan(user.localId);
+  //           if (newPlan) {
+  //             setUserPlan(newPlan);
+  //             showInfo("Thanh toán thành công! Gói của bạn đã được kích hoạt.");
+  //             setIsModalRegMemberOpen(false);
+  //             localStorage.removeItem(PAYMENT_START_KEY);
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error("Error checking payment status:", error);
+  //       }
+  //     }, 5000); // Check every 5 seconds
+  //   }
+  //   return () => {
+  //     if (intervalId) {
+  //       clearInterval(intervalId);
+  //     }
+  //   };
+  // }, [currentOrderId, paymentStatus?.isFinished]);
 
   useEffect(() => {
     if (isModalRegMemberOpen) {
