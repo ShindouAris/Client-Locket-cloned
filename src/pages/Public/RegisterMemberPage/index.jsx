@@ -7,11 +7,13 @@ import LoadingRing from "../../../components/UI/Loading/ring";
 import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment } from "../../../services/LocketDioService/getInfoPlans";
 import { plans } from "../../../utils/plans";
 import { QRCodeSVG } from "qrcode.react";
+import { useLocation } from "react-router-dom";
 
 const formatPrice = (price) =>
   price === 0 ? "Miễn phí" : `${price.toLocaleString()}đ`;
 
 const PAYMENT_TIMEOUT = 300; // 5 minutes in seconds
+const PAYMENT_START_KEY = 'paymentStartTime';
 
 export default function RegisterMemberPage() {
   const { modal } = useApp();
@@ -28,6 +30,7 @@ export default function RegisterMemberPage() {
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const [timeLeft, setTimeLeft] = useState(PAYMENT_TIMEOUT);
   const { user, userPlan, setUserPlan, authTokens } = useContext(AuthContext);
+  const location = useLocation();
 
   useEffect(() => {
     let timeoutId;
@@ -77,6 +80,7 @@ export default function RegisterMemberPage() {
               setUserPlan(newPlan);
               showInfo("Thanh toán thành công! Gói của bạn đã được kích hoạt.");
               setIsModalRegMemberOpen(false);
+              localStorage.removeItem(PAYMENT_START_KEY);
             }
           }
         } catch (error) {
@@ -92,10 +96,20 @@ export default function RegisterMemberPage() {
   }, [currentOrderId, paymentStatus?.isFinished]);
 
   useEffect(() => {
-    if (isModalRegMemberOpen && timeLeft === 0) {
-      setIsModalRegMemberOpen(false);
+    if (isModalRegMemberOpen) {
+      const startTime = localStorage.getItem(PAYMENT_START_KEY);
+      if (startTime) {
+        const elapsed = Math.floor((Date.now() - Number(startTime)) / 1000);
+        const remaining = PAYMENT_TIMEOUT - elapsed;
+        setTimeLeft(remaining > 0 ? remaining : 0);
+        if (remaining <= 0) {
+          setIsModalRegMemberOpen(false);
+        }
+      } else {
+        setTimeLeft(PAYMENT_TIMEOUT);
+      }
     }
-  }, [isModalRegMemberOpen, timeLeft]);
+  }, [isModalRegMemberOpen]);
 
   const handlePaymentExpired = async () => {
     try {
@@ -105,6 +119,7 @@ export default function RegisterMemberPage() {
       setCurrentOrderId(null);
       setPaymentStatus(null);
       setTimeLeft(PAYMENT_TIMEOUT);
+      localStorage.removeItem(PAYMENT_START_KEY);
     } catch (error) {
       console.error("Error handling expired payment:", error);
     }
@@ -133,6 +148,8 @@ export default function RegisterMemberPage() {
         // Handle paid plans
         const result = await registerPaidPlan(user, planId);
         if (result.success) {
+          const startTime = Date.now();
+          localStorage.setItem(PAYMENT_START_KEY, startTime);
           setCurrentOrderId(result.order_id);
           setPaymentStatus(null);
           setTimeLeft(PAYMENT_TIMEOUT);
@@ -163,6 +180,7 @@ export default function RegisterMemberPage() {
       setCurrentOrderId(null);
       setPaymentStatus(null);
       setTimeLeft(PAYMENT_TIMEOUT);
+      localStorage.removeItem(PAYMENT_START_KEY);
     } catch (error) {
       console.error("Error canceling payment:", error);
       showInfo(error.message || "Không thể hủy thanh toán. Vui lòng thử lại!");
@@ -208,6 +226,35 @@ export default function RegisterMemberPage() {
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
+
+  // Close modal and clear payment state on route change or page unload
+  useEffect(() => {
+    const handleUnload = () => {
+      setIsModalRegMemberOpen(false);
+      setCurrentOrderId(null);
+      setPaymentStatus(null);
+      setTimeLeft(PAYMENT_TIMEOUT);
+      localStorage.removeItem(PAYMENT_START_KEY);
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    // If the user navigates away from this page, close modal and clear payment state
+    handleRouteChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  function handleRouteChange() {
+    setIsModalRegMemberOpen(false);
+    setCurrentOrderId(null);
+    setPaymentStatus(null);
+    setTimeLeft(PAYMENT_TIMEOUT);
+    localStorage.removeItem(PAYMENT_START_KEY);
+  }
 
   return (
     <div className="min-h-screen bg-pink-50 py-6 px-4">
