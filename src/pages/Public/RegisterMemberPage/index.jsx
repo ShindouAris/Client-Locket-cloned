@@ -145,6 +145,9 @@ export default function RegisterMemberPage() {
             <p className="mt-2 italic text-gray-500">
               Cảm ơn bạn đã đồng hành và ủng hộ Locket Kanade! 💖
             </p>
+            <p className="mt-2 italic text-red-1000">
+              Nếu có vấn đề gì trong lúc mua hàng, đừng ngần ngại liên hệ tui ở https://discord.gg/atYksnMFaj
+            </p>
           </div>
         </div>
       </div>
