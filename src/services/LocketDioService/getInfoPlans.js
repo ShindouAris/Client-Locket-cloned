@@ -35,19 +35,15 @@ export const fetchUserPlan = async (userId) => {
         start_date: new Date().toLocaleDateString("vi-VN"),
         end_date: "∞"
       };
-    
-      // Save to localStorage
       localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
       return premiumPlan;
     }
 
-    // If no userId provided, try to get from localStorage
     if (!userId) {
       const storedPlan = localStorage.getItem("userPlan");
       if (storedPlan) {
         try {
           const parsedPlan = JSON.parse(storedPlan);
-          // Ensure dates are properly formatted
           if (parsedPlan.start_date && parsedPlan.start_date !== "∞") {
             parsedPlan.start_date = new Date(parsedPlan.start_date).toLocaleDateString("vi-VN");
           }
@@ -59,7 +55,6 @@ export const fetchUserPlan = async (userId) => {
           console.error("Error parsing stored plan:", e);
         }
       }
-      // If no stored plan and no userId, return free plan
       return getDefaultFreePlan();
     }
 
@@ -121,16 +116,26 @@ const getDefaultFreePlan = () => {
 
 export const registerFreePlan = async (user, idToken) => {
   try {
+    // Check current plan first
+    const currentPlan = await fetchUserPlan(user.localId);
+    if (currentPlan && currentPlan.plan_id !== "free") {
+      throw new Error("Bạn đã đăng ký gói khác. Vui lòng hủy gói hiện tại trước khi đăng ký gói mới.");
+    }
+
     const response = await axios.post(API_URL.REGISTER_USER_PLANS, {
       user_id: user.localId,
       plan_id: "free"
     });
 
     if (response.data.success) {
-      // Fetch the updated plan after registration
-      return await fetchUserPlan(user.localId);
+      // Only fetch and return new plan after successful registration
+      const newPlan = await fetchUserPlan(user.localId);
+      if (!newPlan) {
+        throw new Error("Không thể lấy thông tin gói sau khi đăng ký");
+      }
+      return newPlan;
     } else {
-      throw new Error(response.data.message);
+      throw new Error(response.data.message || "Đăng ký gói thất bại");
     }
   } catch (error) {
     console.error("Error registering free plan:", error);
@@ -140,7 +145,16 @@ export const registerFreePlan = async (user, idToken) => {
 
 export const registerPaidPlan = async (user, planId) => {
   try {
-    console.log("registerPaidPlan", user.localId, planId);
+    const currentPlan = await fetchUserPlan(user.localId);
+    if (currentPlan && currentPlan.plan_id !== "free") {
+      throw new Error("Bạn đã đăng ký gói rồi.");
+    }
+
+    const validPlanIds = ["premium_lite", "premium", "pro_plus"];
+    if (!validPlanIds.includes(planId)) {
+      throw new Error("Gói không hợp lệ");
+    }
+
     const response = await axios.post(API_URL.REGISTER_USER_PLANS, {
       user_id: user.localId,
       plan_id: planId
@@ -156,10 +170,10 @@ export const registerPaidPlan = async (user, planId) => {
       return {
         success: true,
         qr_code: response.data.qr_code,
-        message: response.data.message
+        message: "Bạn đã có yêu cầu đang chờ xử lý"
       };
     } else {
-      throw new Error(response.data.message);
+      throw new Error(response.data.message || "Đăng ký gói thất bại");
     }
   } catch (error) {
     console.error("Error registering paid plan:", error);
