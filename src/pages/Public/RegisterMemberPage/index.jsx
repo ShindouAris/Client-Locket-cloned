@@ -40,7 +40,7 @@ export default function RegisterMemberPage() {
     }
 
     const confirmed = window.confirm(
-      `Bạn có chắc muốn đăng ký gói ${planName}?\nCác gói đã đăng ký trước đó sẽ bị hủy nếu có.`
+      `Bạn có chắc muốn đăng ký gói ${planName}?`
     );
     if (!confirmed) return;
 
@@ -144,6 +144,9 @@ export default function RegisterMemberPage() {
             </p>
             <p className="mt-2 italic text-gray-500">
               Cảm ơn bạn đã đồng hành và ủng hộ Locket Kanade! 💖
+            </p>
+            <p className="mt-2">
+                Sau khi thanh toán xong, hãy đợi vài giây rồi bấm làm mới, nếu chưa thấy plan, liên hệ mình qua discord bên dưới !
             </p>
             <p className="mt-2 italic text-red-1000">
               Nếu có vấn đề gì trong lúc mua hàng, đừng ngần ngại liên hệ tui ở https://discord.gg/atYksnMFaj
