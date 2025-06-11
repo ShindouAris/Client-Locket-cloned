@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useApp } from "../../../context/AppContext";
+import {QRCodeSVG} from "qrcode.react";
 
 export default function ModalRegisterMember() {
   const {
@@ -48,7 +49,7 @@ export default function ModalRegisterMember() {
         style={{ maxWidth: "420px", width: "90%" }}
       >
         <h3 className="font-bold text-lg text-center mb-4">
-          Thông tin gói đăng ký
+          {modalData?.qr_code ? "Quét mã QR để thanh toán" : "Thông tin gói đăng ký"}
         </h3>
 
         {modalData ? (
@@ -74,46 +75,74 @@ export default function ModalRegisterMember() {
               </div>
             </div>
 
-            {/* Thông tin chi tiết */}
-            <div className="gap-x-4 gap-y-2">
-              <div className="flex flex-row gap-2">
-                <p className="text-gray-500">Thời hạn: </p>
-                <span className="font-semibold">
-                  {" "}
-                  {modalData.duration_days
-                    ? `${modalData.duration_days} ngày`
-                    : "N/A"}
-                </span>
-              </div>
-              <div className="flex flex-row gap-2">
-                <p className="text-gray-500">Tối đa ảnh/video:</p>
-                <p className="font-semibold">
-                  {" "}
-                  {modalData.max_uploads || "N/A"}
+            {/* QR Code Section */}
+            {modalData.qr_code && (
+              <div className="flex flex-col items-center space-y-3 my-4">
+                <QRCodeSVG
+                  value={modalData.qr_code}
+                  size={192}
+                  level="Q"
+                  className="border-2 border-purple-200 rounded-lg p-2"
+                  imageSettings={{
+                    src: "./node_random_image2.png",
+                    height: 40,
+                    width: 40,
+                    excavate: true,
+                  }}
+                />
+                <p className="text-center text-sm text-gray-600">
+                  Quét mã QR bằng ứng dụng ngân hàng để thanh toán.<br/>
+                  Gói của bạn sẽ được kích hoạt tự động sau khi thanh toán thành công.
+                  <br/>
+                  Lưu ý: Nếu bạn thanh toán thành công nhưng gói vẫn chưa được kích hoạt, vui lòng liên hệ với tui để được hỗ trợ.
                 </p>
               </div>
-            </div>
+            )}
 
-            {/* Tính năng */}
-            <div>
-              <p className="font-semibold mb-1">Các tính năng:</p>
-              <ul className="list-disc list-inside pl-2 space-y-1">
-                {modalData.perks
-                  ? Object.entries(modalData.perks).map(([perk, available]) => (
-                      <li
-                        key={perk}
-                        className={
-                          available
-                            ? "text-green-600"
-                            : "text-gray-400 line-through"
-                        }
-                      >
-                        {perk}
-                      </li>
-                    ))
-                  : "Không có thông tin"}
-              </ul>
-            </div>
+            {!modalData.qr_code && (
+              <>
+                {/* Thông tin chi tiết */}
+                <div className="gap-x-4 gap-y-2">
+                  <div className="flex flex-row gap-2">
+                    <p className="text-gray-500">Thời hạn: </p>
+                    <span className="font-semibold">
+                      {" "}
+                      {modalData.duration_days
+                        ? `${modalData.duration_days} ngày`
+                        : "N/A"}
+                    </span>
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <p className="text-gray-500">Tối đa ảnh/video:</p>
+                    <p className="font-semibold">
+                      {" "}
+                      {modalData.max_uploads || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tính năng */}
+                <div>
+                  <p className="font-semibold mb-1">Các tính năng:</p>
+                  <ul className="list-disc list-inside pl-2 space-y-1">
+                    {modalData.perks
+                      ? Object.entries(modalData.perks).map(([perk, available]) => (
+                          <li
+                            key={perk}
+                            className={
+                              available
+                                ? "text-green-600"
+                                : "text-gray-400 line-through"
+                            }
+                          >
+                            {perk}
+                          </li>
+                        ))
+                      : "Không có thông tin"}
+                  </ul>
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <p className="text-center text-gray-500">
@@ -125,14 +154,16 @@ export default function ModalRegisterMember() {
           <button className="btn btn-outline btn-sm px-5" onClick={closeModal}>
             Đóng
           </button>
-          <button
-            className="btn btn-primary btn-sm px-5"
-            onClick={() => {
-              alert("Gói nào cũng như nhau bấm làm gì.");
-            }}
-          >
-            Tiếp tục
-          </button>
+          {!modalData?.qr_code && (
+            <button
+              className="btn btn-primary btn-sm px-5"
+              onClick={() => {
+                alert("Chưa có");
+              }}
+            >
+              Tiếp tục
+            </button>
+          )}
         </div>
       </div>
     </div>

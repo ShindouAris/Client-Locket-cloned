@@ -8,7 +8,8 @@ const MediaSizeInfo = () => {
 
   const isImage = preview?.type === "image";
   const isVideo = preview?.type === "video";
-  const isTooBig = isImage ? isSizeMedia > 10 : isVideo ? isSizeMedia > 25 : false;
+  const userPlan = JSON.parse(localStorage.getItem("userPlan"));
+  const isTooBig = isImage ? isSizeMedia > userPlan.plan_info.max_image_size : isVideo ? isSizeMedia > userPlan.plan_info.max_video_size : false;
   const colorClass = isTooBig ? "text-red-500" : "text-green-500";
 
   return (

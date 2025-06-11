@@ -29,6 +29,7 @@ setInterval(initializeApiUrl, 30000);
 
 const LOCKET_URL = "/locket";
 const LOCKET_PRO = "/locketpro";
+const SUBSCRIPTION = "/subscription";
 
 const createApiUrlString = (path) => {
   // Always use a backend URL - either custom or default
@@ -68,16 +69,21 @@ export const API_URL = {
   GET_INCOMING_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/get-incoming_friends`)),
   DELETE_FRIEND_REQUEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/delete-incoming_friends`)),
 
-  //API lấy dữ liệu từ máy chủ
+  // API lấy dữ liệu từ máy chủ
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),
   GET_CAPTION_THEMES: createDbApiUrlString(`${LOCKET_PRO}/themes`),
   GET_TIMELINE: createDbApiUrlString(`${LOCKET_PRO}/timelines`),
   DONATE_URL: createDbApiUrlString(`${LOCKET_PRO}/donations`),
   NOTIFI_URL: createDbApiUrlString(`${LOCKET_PRO}/notification`),
   USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
-  POST_USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
   CAPTION_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts`),
+  POST_USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),   
+
+  // Có vẻ không liên quan đến Subscription
   SUBCRIBE: createDbApiUrlString(`${LOCKET_PRO}/subscribe`),
-  REGISTER_USER_PLANS: createDbApiUrlString(`${LOCKET_PRO}/user-plans/register-free`),
-  GET_USER_PLANS: createDbApiUrlString(`${LOCKET_PRO}/user-plans`),
+
+  // API Subscription
+  REGISTER_USER_PLANS: createDbApiUrlString(`${SUBSCRIPTION}/user-plans/register`),
+  GET_USER_PLANS: createDbApiUrlString(`${SUBSCRIPTION}/user-plans`),
+  GET_USER_SUBSCRIPTION: (userId) => createDbApiUrlString(`${SUBSCRIPTION}/user-plans/${userId}`),
 };

@@ -32,7 +32,7 @@ const MediaControls = () => {
     setSelectedRecipients,
   } = post;
   const { setCameraActive } = camera;
-
+  const userPlan = JSON.parse(localStorage.getItem("userPlan"));
   const handleDelete = useCallback(() => {
     // Dừng stream cũ nếu có
     if (camera.streamRef.current) {
@@ -120,7 +120,7 @@ const MediaControls = () => {
     const { type: previewType } = preview || {};
     const isImage = previewType === "image";
     const isVideo = previewType === "video";
-    const maxFileSize = isImage ? 10 : 25;
+    const maxFileSize = isImage ? userPlan.plan_info.max_image_size : userPlan.plan_info.max_video_size;
   
     if (isSizeMedia > maxFileSize) {
       showError(

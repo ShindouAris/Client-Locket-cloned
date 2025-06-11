@@ -4,70 +4,8 @@ import { showInfo } from "../../../components/Toast";
 import { useApp } from "../../../context/AppContext";
 import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
-import { fetchUserPlan } from "../../../services";
-import { registerFreePlan } from "../../../services/LocketDioService/getInfoPlans";
-// plans.js
-const plans = [
-  {
-    id: "free",
-    name: "Free",
-    price: 0,
-    duration_days: 0,
-    max_uploads: 999999,
-    storage_limit: 999999, // MB
-    perks: {
-      "Đăng không giới hạn ảnh/video": true,
-      "Tuỳ chỉnh nền và trang trí đầy đủ": true,
-      "Hỗ trợ tuỳ chỉnh nâng cao": true,
-      "Toàn quyền tuỳ chỉnh mọi tính năng": true,
-      "Giới hạn upload ảnh 3MB": true,
-      "Giới hạn upload video 7MB": true,
-    },
-  },
-  {
-    id: "premium_lite",
-    name: "Premium Lite",
-    price: 10000,
-    duration_days: 30,
-    max_uploads: 999999,
-    storage_limit: 999999, // MB
-    perks: {
-      "Mọi tính năng của gói Free": true,
-      "Không có quảng cáo": true,
-      "Giới hạn upload ảnh 5MB": true,
-      "Giới hạn upload video 10MB": true,
-    },
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: 17000,
-    duration_days: 30,
-    max_uploads: 999999,
-    storage_limit: 999999, // MB
-    perks: {
-      "Mọi tính năng của gói Premium Lite": true,
-      "Không có quảng cáo": true,
-      "Hỗ trợ ưu tiên": true,
-      "Giới hạn upload ảnh 7MB": true,
-      "Giới hạn upload video 20MB": true,
-    },
-  },
-  {
-    id: "pro_plus",
-    name: "Pro Plus",
-    price: 30000,
-    duration_days: 90,
-    max_uploads: 999999,
-    storage_limit: 999999, // MB
-    perks: {
-      "Mọi tính năng của gói Premium": true,
-      "Không có quảng cáo": true,
-      "Hỗ trợ ưu tiên 24/7": true,
-      "Tối đa giới hạn upload ảnh và video (5MB / 25MB)": true,
-    },
-  },
-];
+import { fetchUserPlan, registerFreePlan, registerPaidPlan } from "../../../services/LocketDioService/getInfoPlans";
+import { plans } from "../../../utils/plans";
 
 const formatPrice = (price) =>
   price === 0 ? "Miễn phí" : `${price.toLocaleString()}đ`;
@@ -95,32 +33,42 @@ export default function RegisterMemberPage() {
   //   }
   // }, []);
 
-  const handleSelectPlan = async (planId) => {
-    if (planId === "free") {
-      const confirmed = window.confirm(
-        "Bạn có chắc muốn đăng ký gói Free?\nCác gói đã đăng ký trước đó sẽ bị hủy nếu có."
-      );
-      if (!confirmed) return;
-
-      try {
-        setLoading(true);
-        await registerFreePlan(user, authTokens.idToken);
-        showInfo("Bạn đã đăng ký gói Free thành công!");
-        const data = await fetchUserPlan();
-        if (data) setUserPlan(data);
-      } catch (err) {
-        console.error("❌ Lỗi đăng ký gói Free:", err);
-        showInfo("Đăng ký thất bại. Vui lòng thử lại!");
-      } finally {
-        setLoading(false);
-      }
-
+  const handleSelectPlan = async (planId, planName) => {
+    if (!user || !authTokens?.idToken) {
+      showInfo("Vui lòng đăng nhập để đăng ký gói thành viên!");
       return;
     }
 
-    const plan = plans.find((p) => p.id === planId);
-    setModalData(plan);
-    setIsModalRegMemberOpen(true);
+    const confirmed = window.confirm(
+      `Bạn có chắc muốn đăng ký gói ${planName}?\nCác gói đã đăng ký trước đó sẽ bị hủy nếu có.`
+    );
+    if (!confirmed) return;
+
+    try {
+      setLoading(true);
+      
+      if (planId === "free") {
+        await registerFreePlan(user, authTokens.idToken);
+        showInfo(`Bạn đã đăng ký gói ${planName} thành công!`);
+        const data = await fetchUserPlan(user.localId);
+        if (data) setUserPlan(data);
+      } else {
+        // Handle paid plans
+        const result = await registerPaidPlan(user, planId);
+        if (result.success) {
+          setModalData({
+            ...plans.find(p => p.id === planId),
+            qr_code: result.qr_code
+          });
+          setIsModalRegMemberOpen(true);
+        }
+      }
+    } catch (err) {
+      console.error(`❌ Lỗi đăng ký gói ${planName}:`, err);
+      showInfo(err.message || "Đăng ký thất bại. Vui lòng thử lại!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const [lastRefreshTime, setLastRefreshTime] = useState(0);
@@ -334,7 +282,7 @@ export default function RegisterMemberPage() {
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-purple-500 hover:bg-purple-600"
               }`}
-              onClick={() => handleSelectPlan(plan.id)}
+              onClick={() => handleSelectPlan(plan.id, plan.name)}
               disabled={userPlan?.plan_id === plan.id}
             >
               {userPlan?.plan_id === plan.id
