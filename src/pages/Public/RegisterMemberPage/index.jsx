@@ -6,6 +6,7 @@ import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
 import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment } from "../../../services/LocketDioService/getInfoPlans";
 import { plans } from "../../../utils/plans";
+import { QRCodeSVG } from "qrcode.react";
 
 const formatPrice = (price) =>
   price === 0 ? "Miễn phí" : `${price.toLocaleString()}đ`;
@@ -89,6 +90,12 @@ export default function RegisterMemberPage() {
       }
     };
   }, [currentOrderId, paymentStatus?.isFinished]);
+
+  useEffect(() => {
+    if (isModalRegMemberOpen && timeLeft === 0) {
+      setIsModalRegMemberOpen(false);
+    }
+  }, [isModalRegMemberOpen, timeLeft]);
 
   const handlePaymentExpired = async () => {
     try {
@@ -420,8 +427,13 @@ export default function RegisterMemberPage() {
 
       {/* Payment Modal */}
       {isModalRegMemberOpen && modalData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
+            <div className="absolute -top-3 right-4 bg-white px-3 py-1 rounded-full shadow-md">
+              <p className="text-sm text-red-500 font-medium">
+                {formatTimeLeft(timeLeft)}
+              </p>
+            </div>
             <h2 className="text-2xl font-bold text-center mb-4">
               Thanh toán gói {modalData.name}
             </h2>
@@ -432,18 +444,23 @@ export default function RegisterMemberPage() {
               <p className="text-sm text-gray-600 mb-4">
                 Thời hạn: {modalData.duration_days} ngày
               </p>
-              <div className="mb-4">
-                <img
-                  src={modalData.qr_code}
-                  alt="QR Code"
-                  className="mx-auto max-w-[200px]"
+              <div className="mb-4 flex justify-center">
+                <QRCodeSVG
+                  value={modalData.qr_code}
+                  size={192}
+                  level="Q"
+                  className="border-2 border-purple-200 rounded-lg p-2 "
+                  imageSettings={{
+                    src: "./node_random_image2.png",
+                    height: 40,
+                    width: 40,
+                    excavate: true,
+                  }}
                 />
               </div>
-              <p className="text-sm text-gray-600 mb-2">
-                Quét mã QR để thanh toán
-              </p>
-              <p className="text-sm text-red-500 mb-4">
-                Thời gian còn lại: {formatTimeLeft(timeLeft)}
+              <p className="text-sm text-gray-600 mb-4">
+                Quét mã QR bằng ứng dụng ngân hàng của bạn để thanh toán. Gói của bạn sẽ được kích hoạt tự động sau khi thanh toán thành công.<br/>
+                <span className="text-xs text-gray-500">Nếu bạn đã thanh toán thành công nhưng gói vẫn chưa được kích hoạt, vui lòng liên hệ với hỗ trợ.</span>
               </p>
             </div>
             <div className="flex gap-4 justify-center">
