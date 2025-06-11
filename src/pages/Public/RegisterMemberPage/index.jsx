@@ -4,11 +4,13 @@ import { showInfo } from "../../../components/Toast";
 import { useApp } from "../../../context/AppContext";
 import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
-import { fetchUserPlan, registerFreePlan, registerPaidPlan } from "../../../services/LocketDioService/getInfoPlans";
+import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment } from "../../../services/LocketDioService/getInfoPlans";
 import { plans } from "../../../utils/plans";
 
 const formatPrice = (price) =>
   price === 0 ? "Miễn phí" : `${price.toLocaleString()}đ`;
+
+const PAYMENT_TIMEOUT = 300; // 5 minutes in seconds
 
 export default function RegisterMemberPage() {
   const { modal } = useApp();
@@ -19,19 +21,87 @@ export default function RegisterMemberPage() {
     setModalData,
   } = modal;
   const [isExpanded, setIsExpanded] = useState(false);
-  // Thêm dòng sau trong component
   const [loading, setLoading] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(PAYMENT_TIMEOUT);
   const { user, userPlan, setUserPlan, authTokens } = useContext(AuthContext);
 
-  // useEffect(() => {
-  //   if (authTokens.localId && authTokens.idToken) {
-  //     fetchUserPlan(authTokens.localId, authTokens.idToken).then((data) => {
-  //       if (data) {
-  //         setUserPlan(data);
-  //       }
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    let timeoutId;
+    if (isModalRegMemberOpen && currentOrderId && !paymentStatus?.isFinished) {
+      timeoutId = setTimeout(() => {
+        handlePaymentExpired();
+      }, PAYMENT_TIMEOUT * 1000);
+    }
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isModalRegMemberOpen, currentOrderId, paymentStatus?.isFinished]);
+
+  useEffect(() => {
+    let intervalId;
+    if (isModalRegMemberOpen && currentOrderId && !paymentStatus?.isFinished) {
+      intervalId = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(intervalId);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isModalRegMemberOpen, currentOrderId, paymentStatus?.isFinished]);
+
+  useEffect(() => {
+    let intervalId;
+    if (currentOrderId && !paymentStatus?.isFinished) {
+      intervalId = setInterval(async () => {
+        try {
+          const status = await checkPaymentStatus(currentOrderId);
+          setPaymentStatus(status);
+          if (status.isFinished) {
+            clearInterval(intervalId);
+            const newPlan = await fetchUserPlan(user.localId);
+            if (newPlan) {
+              setUserPlan(newPlan);
+              showInfo("Thanh toán thành công! Gói của bạn đã được kích hoạt.");
+              setIsModalRegMemberOpen(false);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking payment status:", error);
+        }
+      }, 5000); // Check every 5 seconds
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [currentOrderId, paymentStatus?.isFinished]);
+
+  const handlePaymentExpired = async () => {
+    try {
+      await cancelPayment(currentOrderId);
+      showInfo("Phiên thanh toán đã hết hạn. Vui lòng thử lại!");
+      setIsModalRegMemberOpen(false);
+      setCurrentOrderId(null);
+      setPaymentStatus(null);
+      setTimeLeft(PAYMENT_TIMEOUT);
+    } catch (error) {
+      console.error("Error handling expired payment:", error);
+    }
+  };
 
   const handleSelectPlan = async (planId, planName) => {
     if (!user || !authTokens?.idToken) {
@@ -56,9 +126,13 @@ export default function RegisterMemberPage() {
         // Handle paid plans
         const result = await registerPaidPlan(user, planId);
         if (result.success) {
+          setCurrentOrderId(result.order_id);
+          setPaymentStatus(null);
+          setTimeLeft(PAYMENT_TIMEOUT);
           setModalData({
             ...plans.find(p => p.id === planId),
-            qr_code: result.qr_code
+            qr_code: result.qr_code,
+            order_id: result.order_id
           });
           setIsModalRegMemberOpen(true);
         }
@@ -68,6 +142,25 @@ export default function RegisterMemberPage() {
       showInfo(err.message || "Đăng ký thất bại. Vui lòng thử lại!");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelPayment = async () => {
+    if (!currentOrderId) return;
+
+    try {
+      setPaymentLoading(true);
+      await cancelPayment(currentOrderId);
+      showInfo("Đã hủy yêu cầu thanh toán");
+      setIsModalRegMemberOpen(false);
+      setCurrentOrderId(null);
+      setPaymentStatus(null);
+      setTimeLeft(PAYMENT_TIMEOUT);
+    } catch (error) {
+      console.error("Error canceling payment:", error);
+      showInfo(error.message || "Không thể hủy thanh toán. Vui lòng thử lại!");
+    } finally {
+      setPaymentLoading(false);
     }
   };
 
@@ -100,6 +193,13 @@ export default function RegisterMemberPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Format time left as MM:SS
+  const formatTimeLeft = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -157,17 +257,35 @@ export default function RegisterMemberPage() {
       {/* 👉 Hiển thị gói hiện tại nếu có */}
       {userPlan && userPlan.plan_info ? (
         <>
-          <div className=" max-w-2xl mx-auto bg-white border border-purple-200 p-6 rounded-3xl shadow-lg mb-4 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition hover:shadow-xl">
-            {/* Ảnh đại diện */}
-            <div className="flex-shrink-0">
-              <img
-                src={userPlan.profile_picture || "./prvlocket.png"}
-                alt="Avatar"
-                className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-300 shadow-md"
-              />
+          <div className="max-w-2xl mx-auto bg-white border border-purple-200 p-6 rounded-3xl shadow-lg mb-4 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition hover:shadow-xl">
+            {/* Left side - Plan Perks */}
+            <div className="w-full sm:w-1/3 bg-purple-50 p-4 rounded-xl">
+              <h3 className="text-lg font-semibold text-purple-700 mb-3">Quyền lợi gói</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🖼️</span>
+                  <span className="text-sm text-gray-700">
+                    Upload ảnh: <span className="font-medium">{userPlan.plan_info.max_image_size || 'Không giới hạn'} MB</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🎥</span>
+                  <span className="text-sm text-gray-700">
+                    Upload video: <span className="font-medium">{userPlan.plan_info.max_video_size || 'Không giới hạn'} MB</span>
+                  </span>
+                </div>
+                {Object.entries(userPlan.plan_info.perks || {}).map(([perk, enabled], index) => (
+                  enabled && (
+                    <div key={index} className="flex items-center gap-2">
+                      <span className="text-xl">✨</span>
+                      <span className="text-sm text-gray-700">{perk}</span>
+                    </div>
+                  )
+                ))}
+              </div>
             </div>
 
-            {/* Thông tin gói */}
+            {/* Right side - User Info */}
             <div className="flex-1 space-y-4 text-center sm:text-left">
               {/* Header: Gói + Badge */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -196,26 +314,20 @@ export default function RegisterMemberPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">🟢</span>
-                  <span className="font-medium text-gray-600">Bắt đầu:</span>
-                  <span className="text-gray-800">{userPlan.start_date}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🔚</span>
-                  <span className="font-medium text-gray-600">Kết thúc:</span>
+                  <span className="text-xl">⏳</span>
+                  <span className="font-medium text-gray-600">Còn lại:</span>
                   <span className="text-gray-800">
-                    {userPlan.end_date || "-- / -- / ----"}
-                  </span>
-                </div>
-
-                <div className="sm:col-span-2 flex items-center gap-2">
-                  <span className="text-xl">🗂️</span>
-                  <span className="font-medium text-gray-600">
-                    Tối đa upload:
-                  </span>
-                  <span className="text-gray-800">
-                    Không giới hạn ảnh/video
+                    {userPlan.end_date ? (
+                      (() => {
+                        const endDate = new Date(userPlan.end_date);
+                        const today = new Date();
+                        const diffTime = endDate - today;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        return diffDays > 0 ? `${diffDays} ngày` : 'Hết hạn';
+                      })()
+                    ) : (
+                      'Vĩnh viễn'
+                    )}
                   </span>
                 </div>
               </div>
@@ -224,10 +336,10 @@ export default function RegisterMemberPage() {
           <div className="text-center mt-4">
             <button
               onClick={handleRefreshPlan}
-              className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-white font-medium transition-all ${
+              className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white font-medium transition-all duration-300 transform hover:scale-105 ${
                 loading
                   ? "bg-gray-400 cursor-wait"
-                  : "bg-blue-500 hover:bg-blue-600"
+                  : "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-lg hover:shadow-xl"
               }`}
               disabled={loading}
             >
@@ -237,7 +349,12 @@ export default function RegisterMemberPage() {
                   <span>Đang cập nhật...</span>
                 </>
               ) : (
-                "🔄 Cập nhật lại gói"
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                  </svg>
+                  <span>Cập nhật gói</span>
+                </>
               )}
             </button>
           </div>
@@ -300,6 +417,62 @@ export default function RegisterMemberPage() {
           </div>
         ))}
       </div>
+
+      {/* Payment Modal */}
+      {isModalRegMemberOpen && modalData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-2xl font-bold text-center mb-4">
+              Thanh toán gói {modalData.name}
+            </h2>
+            <div className="text-center mb-4">
+              <p className="text-lg font-semibold mb-2">
+                {formatPrice(modalData.price)}
+              </p>
+              <p className="text-sm text-gray-600 mb-4">
+                Thời hạn: {modalData.duration_days} ngày
+              </p>
+              <div className="mb-4">
+                <img
+                  src={modalData.qr_code}
+                  alt="QR Code"
+                  className="mx-auto max-w-[200px]"
+                />
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                Quét mã QR để thanh toán
+              </p>
+              <p className="text-sm text-red-500 mb-4">
+                Thời gian còn lại: {formatTimeLeft(timeLeft)}
+              </p>
+            </div>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={handleCancelPayment}
+                disabled={paymentLoading}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+              >
+                {paymentLoading ? (
+                  <LoadingRing size={20} stroke={2} />
+                ) : (
+                  "Hủy"
+                )}
+              </button>
+              <button
+                onClick={() => {
+                  if (paymentStatus?.isFinished) {
+                    setIsModalRegMemberOpen(false);
+                  }
+                }}
+                disabled={!paymentStatus?.isFinished}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              >
+                {paymentStatus?.isFinished ? "Tiếp tục" : "Đang chờ thanh toán..."}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

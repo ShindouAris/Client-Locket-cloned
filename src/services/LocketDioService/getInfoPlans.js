@@ -143,6 +143,36 @@ export const registerFreePlan = async (user, idToken) => {
   }
 };
 
+export const checkPaymentStatus = async (orderId) => {
+  try {
+    const response = await axios.get(API_URL.CHECK_PAYMENT_STATUS(orderId));
+    return {
+      success: response.data.success,
+      message: response.data.message,
+      isFinished: response.data.message === "Order Finished"
+    };
+  } catch (error) {
+    console.error("Error checking payment status:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error checking payment status"
+    };
+  }
+};
+
+export const cancelPayment = async (orderId) => {
+  try {
+    const response = await axios.post(API_URL.CANCEL_PAYMENT(orderId));
+    return {
+      success: response.data.success,
+      message: response.data.message
+    };
+  } catch (error) {
+    console.error("Error canceling payment:", error);
+    throw new Error(error.response?.data?.detail || "Error canceling payment");
+  }
+};
+
 export const registerPaidPlan = async (user, planId) => {
   try {
     const currentPlan = await fetchUserPlan(user.localId);
@@ -163,6 +193,7 @@ export const registerPaidPlan = async (user, planId) => {
     if (response.data.success) {
       return {
         success: true,
+        order_id: response.data.order_id,
         qr_code: response.data.qr_code,
         message: response.data.message
       };
