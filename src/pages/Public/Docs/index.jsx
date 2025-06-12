@@ -116,8 +116,10 @@ const Docs = () => {
             hơn, lưu trữ nhiều hơn, và hỗ trợ tùy chỉnh cá nhân hóa tốt hơn.
           </li>
           <li>
-            <b>Làm sao để nâng cấp gói thành viên?</b> Hiện tại, trang web đã được patch
-            và không cần nâng cấp gói thành viên.
+            <b>Làm sao để nâng cấp gói thành viên?</b> Vào thanh toán thui, khi thanh toán xong,
+            chờ vài giây xong ấn làm mới gói, và gói của bạn đã được kích hoạt
+            trong trường hợp đã thanh toán mà không thấy gói được kích hoạt, liên hệ tui qua {" "}
+            <span className="text-secondary">https://discord.gg/7JDAEp8Mgt</span>
           </li>
           <li>
             <b>Trang web hỗ trợ các trình duyệt nào?</b> Locket Kanade hgỗ trợ tất
