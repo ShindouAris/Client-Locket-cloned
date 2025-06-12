@@ -98,11 +98,14 @@ class LoadBalancer {
     if (!stats) {
       return -avgResponseTime; 
     }
-
-    const responseTimeScore = -avgResponseTime;
-    const ramScore = stats.freeRAM * 0.4; 
-    const cpuScore = -(stats.cpuUsage * 0.4);
-    
+  
+    // Tính theo tỉ lệ RAM container được cấp phát
+    const ramRatio = Math.min(stats.freeRAM / stats.totalRAM, 1.0); // tránh over 100%
+    const ramScore = ramRatio * 100; // Tối đa 100 điểm từ RAM
+  
+    const cpuScore = -(stats.cpuUsage * 0.4); // giữ nguyên
+    const responseTimeScore = -avgResponseTime; // giữ nguyên
+  
     return responseTimeScore + ramScore + cpuScore;
   }
 
@@ -167,7 +170,7 @@ class LoadBalancer {
     return this.getNextNode();
   }
 
-  async getBestNodes(count = 3) {
+  async getBestNodes() {
     // Update nodes if needed
     if (Date.now() - this.lastHealthCheck >= this.healthCheckInterval) {
       await this.updateHealthyNodes();
@@ -181,7 +184,7 @@ class LoadBalancer {
     });
 
     // Return the requested number of best performing nodes
-    return sortedNodes.slice(0, Math.min(count, sortedNodes.length));
+    return sortedNodes.slice(0, Math.min(1, sortedNodes.length));
   }
 }
 
