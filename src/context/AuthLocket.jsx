@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useMemo } from "react";
+import { createContext, useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import * as utils from "../utils";
 import { showInfo } from "../components/Toast";
@@ -9,7 +9,6 @@ import {
   registerFreePlan,
 } from "../services";
 import { plans } from "../utils/plans";
-import axios from "axios";
 
 export const AuthContext = createContext();
 
@@ -269,66 +268,30 @@ export const AuthProvider = ({ children }) => {
     setFriendDetails([]); // 🧼 Xoá dữ liệu cũ khi user thay đổi
   }, [user]);
 
-  // Add effect to auto fetch plan
   useEffect(() => {
-    const fetchAndSetPlan = async () => {
-      if (!authTokens?.localId) {
-        // If no auth tokens, set default free plan
-        const freePlan = plans[0];
-        const defaultPlan = {
-          uid: "free_user",
-          username: "free_user",
-          display_name: "Free User",
-          plan_id: "free",
-          plan_info: {
-            id: "free",
-            name: freePlan.name,
-            features: freePlan.features,
-            max_uploads: freePlan.max_uploads,
-            max_video_size: freePlan.max_video_size,
-            max_image_size: freePlan.max_image_size,
-          },
-          start_date: new Date().toLocaleDateString("vi-VN"),
-          end_date: "∞"
-        };
-        setUserPlan(defaultPlan);
-        localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
-        return;
-      }
-
+    const fetchPlanOnLogin = async () => {
+      if (!user?.localId || !authTokens?.idToken) return;
+      
       try {
-        const plan = await fetchUserPlan(authTokens.localId);
+        const plan = await fetchUserPlan();
         if (plan) {
           setUserPlan(plan);
           localStorage.setItem("userPlan", JSON.stringify(plan));
+        } else {
+          // If no plan exists, register free plan
+          const res = await registerFreePlan(user, authTokens.idToken);
+          if (res?.data) {
+            setUserPlan(res.data);
+            localStorage.setItem("userPlan", JSON.stringify(res.data));
+          }
         }
-      } catch (error) {
-        console.error("Error fetching plan:", error);
-        // On error, set default free plan
-        const freePlan = plans[0];
-        const defaultPlan = {
-          uid: "free_user",
-          username: "free_user",
-          display_name: "Free User",
-          plan_id: "free",
-          plan_info: {
-            id: "free",
-            name: freePlan.name,
-            features: freePlan.features,
-            max_uploads: freePlan.max_uploads,
-            max_video_size: freePlan.max_video_size,
-            max_image_size: freePlan.max_image_size,
-          },
-          start_date: new Date().toLocaleDateString("vi-VN"),
-          end_date: "∞"
-        };
-        setUserPlan(defaultPlan);
-        localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
+      } catch (err) {
+        console.error("Lỗi khi fetch plan sau login:", err);
       }
     };
 
-    fetchAndSetPlan();
-  }, [authTokens?.localId]); // Re-run when auth tokens change
+    fetchPlanOnLogin();
+  }, [user?.localId, authTokens?.idToken]);
 
   const resetAuthContext = () => {
     setUser(null);
