@@ -434,7 +434,13 @@ export default function RegisterMemberPage() {
               userPlan?.plan_id === plan.id ? "ring-4 ring-purple-300" : ""
             }`}
           >
-            <h2 className="text-xl font-semibold text-purple-600">
+            <h2 
+              className="text-xl font-semibold" 
+              style={{ 
+                color: plan.color || '#9333ea',
+                textShadow: `0 0 10px ${plan.color || '#9333ea'}40`
+              }}
+            >
               {plan.name}
             </h2>
             <p className="text-lg font-bold my-2">{formatPrice(plan.price)}</p>

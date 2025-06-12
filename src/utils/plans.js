@@ -6,6 +6,7 @@ export const plans = [
     duration_days: 0,
     max_uploads: 999999,
     storage_limit: 999999, // MB
+    color: "#948979",
     perks: {
       "Đăng không giới hạn ảnh/video": true,
       "Tuỳ chỉnh nền và trang trí đầy đủ": true,
@@ -35,6 +36,7 @@ export const plans = [
     duration_days: 30,
     max_uploads: 999999,
     storage_limit: 999999,
+    color: "#4DA8DA",
     perks: {
       "Mọi tính năng của gói Free": true,
       "Không có quảng cáo": true,
@@ -62,6 +64,7 @@ export const plans = [
     duration_days: 30,
     max_uploads: 999999,
     storage_limit: 999999,
+    color: "#52357B",
     perks: {
       "Mọi tính năng của gói Premium Lite": true,
       "Không có quảng cáo": true,
@@ -90,6 +93,7 @@ export const plans = [
     duration_days: 90,
     max_uploads: 999999,
     storage_limit: 999999,
+    color: "#626F47",
     perks: {
       "Mọi tính năng của gói Premium": true,
       "Không có quảng cáo": true,
