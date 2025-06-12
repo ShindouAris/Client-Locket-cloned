@@ -19,7 +19,7 @@ export const getBackendUrl = async () => {
   
   // Import dynamically to avoid circular dependency
   const loadBalancer = (await import('./loadBalancer')).default;
-  return await loadBalancer.getBestNodes();
+  return await loadBalancer.getHealthyNode();
 };
 
 export const isUsingCustomBackend = () => {
