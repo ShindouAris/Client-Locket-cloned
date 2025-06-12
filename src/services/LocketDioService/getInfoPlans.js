@@ -22,17 +22,20 @@ export const register_trial_plan = async (uid) => {
     const useCustomBackend = localStorage.getItem("use_custom_backend") === "true";
     if (useCustomBackend) {
       return false;
-    }
-    response = axios.get(API_URL.REG_TRIAL, {
+    } 
+    const response = await axios.post(API_URL.REG_TRIAL, {
       user_id: uid
     })
     const {success, message} = response.data;
+
     if (!success) {
       throw new Error(message)
     }
+
     return true;
     
   } catch (error) {
+    console.error(error)
     return false;
   }
 }
