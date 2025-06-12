@@ -87,5 +87,7 @@ export const API_URL = {
   GET_USER_PLANS: createDbApiUrlString(`${SUBSCRIPTION}/user-plans`),
   GET_USER_SUBSCRIPTION: (userId) => createDbApiUrlString(`${SUBSCRIPTION}/user-plans/${userId}`),
   CHECK_PAYMENT_STATUS: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/check-payment-status/${order_id}`),
-  CANCEL_PAYMENT: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/payment/cancel/${order_id}`)
+  CANCEL_PAYMENT: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/payment/cancel/${order_id}`),
+  CHECK_TRIAL_ABILITY: (uid) => createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/${uid}`),
+  REG_TRIAL: createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/register`)
 };

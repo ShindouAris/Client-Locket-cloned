@@ -26,6 +26,7 @@ export const plans = [
       dev_tools: true,
       no_ads: false,
     },
+    has_trial_offer: false,
     max_image_size: 3,
     max_video_size: 7
   },
@@ -54,6 +55,7 @@ export const plans = [
       dev_tools: true,
       no_ads: true,
     },
+    has_trial_offer: false,
     max_image_size: 5,
     max_video_size: 10
   },
@@ -83,6 +85,7 @@ export const plans = [
       dev_tools: true,
       no_ads: true,
     },
+    has_trial_offer: false,
     max_image_size: 7,
     max_video_size: 20
   },
@@ -111,6 +114,7 @@ export const plans = [
       dev_tools: true,
       no_ads: true,
     },
+    has_trial_offer: true,
     max_image_size: 10,
     max_video_size: 25
   },

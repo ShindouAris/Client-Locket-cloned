@@ -3,6 +3,40 @@ import { API_URL } from "../../utils/API/apiRoutes";
 import { plans } from "../../utils/plans";
 import axios from "axios";
 
+export const  check_trial_ability = async (uid) => {
+  try {
+    const useCustomBackend = localStorage.getItem("use_custom_backend") === "true";
+    if (useCustomBackend) {
+      return false;
+    }
+    const response = await axios.get(API_URL.CHECK_TRIAL_ABILITY(uid))
+    const trailable = response.data;
+    return trailable;
+  } catch (error) {
+    return false;
+  }
+}
+
+export const register_trial_plan = async (uid) => {
+  try {
+    const useCustomBackend = localStorage.getItem("use_custom_backend") === "true";
+    if (useCustomBackend) {
+      return false;
+    }
+    response = axios.get(API_URL.REG_TRIAL, {
+      user_id: uid
+    })
+    const {success, message} = response.data;
+    if (!success) {
+      throw new Error(message)
+    }
+    return true;
+    
+  } catch (error) {
+    return false;
+  }
+}
+
 export const fetchUserPlan = async (userId) => {
   try {
     const useCustomBackend = localStorage.getItem("use_custom_backend") === "true";

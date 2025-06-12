@@ -4,7 +4,7 @@ import { showInfo } from "../../../components/Toast";
 import { useApp } from "../../../context/AppContext";
 import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
-import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment } from "../../../services/LocketDioService/getInfoPlans";
+import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment, check_trial_ability, register_trial_plan } from "../../../services/LocketDioService/getInfoPlans";
 import { plans } from "../../../utils/plans";
 import { QRCodeSVG } from "qrcode.react";
 import { useLocation } from "react-router-dom";
@@ -31,6 +31,8 @@ export default function RegisterMemberPage() {
   const [timeLeft, setTimeLeft] = useState(PAYMENT_TIMEOUT);
   const { user, userPlan, setUserPlan, authTokens } = useContext(AuthContext);
   const location = useLocation();
+  const [trialLoading, setTrialLoading] = useState(false);
+  const [trialEligible, setTrialEligible] = useState(false);
 
   useEffect(() => {
     let timeoutId;
@@ -65,35 +67,6 @@ export default function RegisterMemberPage() {
       }
     };
   }, [isModalRegMemberOpen, currentOrderId, paymentStatus?.isFinished]);
-
-  // useEffect(() => {
-  //   let intervalId;
-  //   if (currentOrderId && !paymentStatus?.isFinished) {
-  //     intervalId = setInterval(async () => {
-  //       try {
-  //         const status = await checkPaymentStatus(currentOrderId);
-  //         setPaymentStatus(status);
-  //         if (status.isFinished) {
-  //           clearInterval(intervalId);
-  //           const newPlan = await fetchUserPlan(user.localId);
-  //           if (newPlan) {
-  //             setUserPlan(newPlan);
-  //             showInfo("Thanh toán thành công! Gói của bạn đã được kích hoạt.");
-  //             setIsModalRegMemberOpen(false);
-  //             localStorage.removeItem(PAYMENT_START_KEY);
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.error("Error checking payment status:", error);
-  //       }
-  //     }, 5000); // Check every 5 seconds
-  //   }
-  //   return () => {
-  //     if (intervalId) {
-  //       clearInterval(intervalId);
-  //     }
-  //   };
-  // }, [currentOrderId, paymentStatus?.isFinished]);
 
   useEffect(() => {
     if (isModalRegMemberOpen) {
@@ -255,6 +228,53 @@ export default function RegisterMemberPage() {
     setTimeLeft(PAYMENT_TIMEOUT);
     localStorage.removeItem(PAYMENT_START_KEY);
   }
+
+  // Add useEffect to check trial eligibility when component mounts
+  useEffect(() => {
+    const checkTrialEligibility = async () => {
+      if (user?.localId) {
+        const eligible = await check_trial_ability(user.localId);
+        setTrialEligible(eligible);
+      }
+    };
+    checkTrialEligibility();
+  }, [user]);
+
+  // Add trial registration handler
+  const handleTrialRegistration = async (planId) => {
+    if (!user || !authTokens?.idToken) {
+      showInfo("Vui lòng đăng nhập để đăng ký gói dùng thử!");
+      return;
+    }
+
+    if (!trialEligible) {
+      showInfo("Bạn không đủ điều kiện để đăng ký gói dùng thử!");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Bạn có chắc muốn đăng ký gói dùng thử 14 ngày?"
+    );
+    if (!confirmed) return;
+
+    try {
+      setTrialLoading(true);
+      const success = await register_trial_plan(user.localId);
+      
+      if (success) {
+        showInfo("Đăng ký gói dùng thử thành công!");
+        const data = await fetchUserPlan(user.localId);
+        if (data) setUserPlan(data);
+      } else {
+        showInfo("Đăng ký gói dùng thử thất bại. Vui lòng thử lại sau!");
+      }
+    } catch (err) {
+      console.error("❌ Lỗi đăng ký gói dùng thử:", err);
+      showInfo(err.message || "Đăng ký thất bại. Vui lòng thử lại!");
+    } finally {
+      setTrialLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-pink-50 py-6 px-4">
@@ -451,7 +471,7 @@ export default function RegisterMemberPage() {
             </p>
             <ul className="text-sm text-left text-gray-700 space-y-2 flex-1">
               {Object.entries(plan.perks)
-                .filter(([perkName, hasAccess]) => hasAccess) // chỉ lấy perks được phép
+                .filter(([perkName, hasAccess]) => hasAccess)
                 .map(([perkName], index) => (
                   <li key={index} className="flex items-center gap-2">
                     <span className="text-purple-500 font-bold">✔️</span>
@@ -459,21 +479,46 @@ export default function RegisterMemberPage() {
                   </li>
                 ))}
             </ul>
-            <button
-              className={`mt-4 py-2 px-4 rounded-full text-white ${
-                userPlan?.plan_id === plan.id
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-purple-500 hover:bg-purple-600"
-              }`}
-              onClick={() => handleSelectPlan(plan.id, plan.name)}
-              disabled={userPlan?.plan_id === plan.id}
-            >
-              {userPlan?.plan_id === plan.id
-                ? "Đang sử dụng"
-                : plan.price === 0
-                ? "Bắt đầu miễn phí"
-                : "Chọn gói này"}
-            </button>
+            <div className="mt-4 space-y-2">
+              {plan.has_trial_offer && trialEligible ? (
+                <button
+                  className={`w-full py-2 px-4 rounded-full text-white ${
+                    trialLoading
+                      ? "bg-gray-400 cursor-wait"
+                      : "bg-emerald-800 hover:bg-sky-700"
+                  }`}
+                  onClick={() => handleTrialRegistration(plan.id)}
+                  disabled={trialLoading || userPlan?.plan_id === plan.id}
+                >
+                  {trialLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <LoadingRing size={16} stroke={2} />
+                      Đang xử lý...
+                    </span>
+                  ) : userPlan?.plan_id === plan.id ? (
+                    "Đang sử dụng"
+                  ) : (
+                    "Dùng thử 14 ngày"
+                  )}
+                </button>
+              ) : (
+                <button
+                  className={`w-full py-2 px-4 rounded-full text-white ${
+                    userPlan?.plan_id === plan.id
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-violet-900 hover:bg-cyan-900"
+                  }`}
+                  onClick={() => handleSelectPlan(plan.id, plan.name)}
+                  disabled={userPlan?.plan_id === plan.id}
+                >
+                  {userPlan?.plan_id === plan.id
+                    ? "Đang sử dụng"
+                    : plan.price === 0
+                    ? "Bắt đầu miễn phí"
+                    : "Chọn gói này"}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
