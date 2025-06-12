@@ -34,13 +34,16 @@ export const AuthProvider = ({ children }) => {
     if (saved) {
       try {
         const parsedPlan = JSON.parse(saved);
-        // Ensure dates are properly formatted
+  
+        // Đừng format ở đây, chỉ convert sang Date nếu cần
         if (parsedPlan.start_date && parsedPlan.start_date !== "∞") {
-          parsedPlan.start_date = new Date(parsedPlan.start_date).toLocaleDateString("vi-VN");
+          parsedPlan.start_date = parsedPlan.start_date;
         }
         if (parsedPlan.end_date && parsedPlan.end_date !== "∞") {
-          parsedPlan.end_date = new Date(parsedPlan.end_date).toLocaleDateString("vi-VN");
+          parsedPlan.end_date = parsedPlan.end_date;
+          
         }
+  
         return parsedPlan;
       } catch (e) {
         console.error("Error parsing saved plan:", e);
@@ -61,7 +64,7 @@ export const AuthProvider = ({ children }) => {
         max_video_size: freePlan.max_video_size,
         max_image_size: freePlan.max_image_size,
       },
-      start_date: new Date().toLocaleDateString("vi-VN"),
+      start_date: new Date(),
       end_date: "∞"
     };
     localStorage.setItem("userPlan", JSON.stringify(defaultPlan));

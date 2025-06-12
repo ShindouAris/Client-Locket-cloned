@@ -32,7 +32,7 @@ export const fetchUserPlan = async (userId) => {
           max_video_size: 25,
           max_image_size: 10,
         },
-        start_date: new Date().toLocaleDateString("vi-VN"),
+        start_date: new Date().getTime(),
         end_date: "∞"
       };
       localStorage.setItem("userPlan", JSON.stringify(premiumPlan));
@@ -45,10 +45,10 @@ export const fetchUserPlan = async (userId) => {
         try {
           const parsedPlan = JSON.parse(storedPlan);
           if (parsedPlan.start_date && parsedPlan.start_date !== "∞") {
-            parsedPlan.start_date = new Date(parsedPlan.start_date).toLocaleDateString("vi-VN");
+            parsedPlan.start_date = parsedPlan.start_date;
           }
           if (parsedPlan.end_date && parsedPlan.end_date !== "∞") {
-            parsedPlan.end_date = new Date(parsedPlan.end_date).toLocaleDateString("vi-VN");
+            parsedPlan.end_date = parsedPlan.end_date;
           }
           return parsedPlan;
         } catch (e) {
@@ -77,8 +77,8 @@ export const fetchUserPlan = async (userId) => {
         max_video_size: planDetails.max_video_size,
         max_image_size: planDetails.max_image_size,
       },
-      start_date: planData.start_date ? new Date(planData.start_date * 1000).toLocaleDateString("vi-VN") : new Date().toLocaleDateString("vi-VN"),
-      end_date: planData.end_date ? new Date(planData.end_date * 1000).toLocaleDateString("vi-VN") : "∞",
+      start_date: planData.start_date ? planData.start_date * 1000  : new Date().getTime(),
+      end_date: planData.end_date ? planData.end_date * 1000 : "∞",
       qr_code: planData.qr_code
     };
 
@@ -107,7 +107,7 @@ const getDefaultFreePlan = () => {
       max_video_size: freePlan.max_video_size,
       max_image_size: freePlan.max_image_size,
     },
-    start_date: new Date().toLocaleDateString("vi-VN"),
+    start_date: new Date().getTime(),
     end_date: "∞"
   };
   localStorage.setItem("userPlan", JSON.stringify(defaultPlan));
