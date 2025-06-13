@@ -112,7 +112,8 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
   // Handle zoom change
   const handleZoomChange = useCallback((newZoom, is_wheel= false) => {
     let clampedZoom = Math.min(Math.max(newZoom, 1), maxZoom);
-    if (clampedZoom == 4 && !is_wheel) {
+    console.log(`${newZoom}, ${maxZoom} ${clampedZoom}`)
+    if (clampedZoom == maxZoom && !is_wheel) {
       clampedZoom = 1;
     }
     setZoomLevel(clampedZoom);
