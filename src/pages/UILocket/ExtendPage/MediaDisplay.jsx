@@ -4,6 +4,7 @@ import Hourglass from "../../../components/UI/Loading/hourglass";
 import { useApp } from "../../../context/AppContext";
 import MediaSizeInfo from "../../../components/UI/MediaSizeInfo";
 import BorderProgress from "../../../components/UI/SquareProgress";
+import { RiCameraLensAiFill } from "react-icons/ri";
 
 const MediaPreview = ({ loading, countdown, capturedMedia }) => {
   const { post, useloading, camera } = useApp();
@@ -15,7 +16,7 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
 
   // Zoom states
   const [zoomLevel, setZoomLevel] = useState(1);
-  const [maxZoom, setMaxZoom] = useState(3);
+  const [maxZoom, setMaxZoom] = useState(4);
   const [isZooming, setIsZooming] = useState(false);
   
   // States cho camera quality
@@ -27,26 +28,53 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
   
   const videoContainerRef = useRef(null);
   const zoomTimeoutRef = useRef(null);
+  const [isAutoFocusSupported, setIsAutoFocusSupported] = useState(false);
+
 
   // Auto focus function
   const triggerAutoFocus = useCallback(async () => {
     if (!streamRef.current) return;
-    
+  
     const videoTrack = streamRef.current.getVideoTracks()[0];
     if (!videoTrack) return;
-
+  
     try {
+      const capabilities = videoTrack.getCapabilities();
+  
       setIsStabilizing(true);
-      await videoTrack.applyConstraints({
-        advanced: [{ focusMode: "auto" }]
-      });
-      
+      console.log(capabilities)
+  
+      if (capabilities.focusMode?.includes("auto")) {
+        await videoTrack.applyConstraints({
+          advanced: [{ focusMode: "auto" }]
+        });
+      } else {
+        console.warn("focusMode not supported");
+      }
+  
       setTimeout(() => setIsStabilizing(false), 1000);
     } catch (err) {
       console.warn("Không thể auto focus:", err);
       setIsStabilizing(false);
     }
   }, [streamRef]);
+
+  useEffect(() => {
+    if (!streamRef.current) return;
+  
+    const track = streamRef.current.getVideoTracks()[0];
+    if (!track) return;
+  
+    const capabilities = track.getCapabilities();
+  
+    const supported =
+      "focusMode" in capabilities &&
+      Array.isArray(capabilities.focusMode) &&
+      capabilities.focusMode.includes("auto");
+  
+    setIsAutoFocusSupported(supported);
+  }, [streamRef]);
+  
 
   // Hàm tính khoảng cách giữa 2 điểm touch
   const getTouchDistance = (touches) => {
@@ -83,7 +111,10 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
 
   // Handle zoom change
   const handleZoomChange = useCallback((newZoom) => {
-    const clampedZoom = Math.min(Math.max(newZoom, 1), maxZoom);
+    let clampedZoom = Math.min(Math.max(newZoom, 1), maxZoom);
+    if (clampedZoom == 4) {
+      clampedZoom = 1;
+    }
     setZoomLevel(clampedZoom);
     
     // Apply zoom to camera if active
@@ -303,12 +334,9 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
         )}
 
         {/* Camera Quality & Focus Controls */}
-        {cameraActive && !preview && !selectedFile && !capturedMedia && (
+        {cameraActive && !preview && !selectedFile && !capturedMedia && isAutoFocusSupported && (
           <div className="absolute top-4 left-4 z-40 flex flex-col gap-2">
             {/* Quality indicator */}
-            <div className="bg-black/60 text-white px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-              📹 {cameraQuality}
-            </div>
             
             {/* Focus button */}
             <button
@@ -317,45 +345,22 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
               className={`
                 w-10 h-10 bg-black/60 rounded-full flex items-center justify-center text-white 
                 hover:bg-black/80 transition-all duration-200 backdrop-blur-sm
-                ${isStabilizing ? 'animate-pulse' : ''}
+                ${isStabilizing ? 'animate-pulse' : ''} 
               `}
               title="Lấy nét tự động"
             >
-              <div className={`w-6 h-6 border-2 border-white rounded-full ${isStabilizing ? 'animate-spin border-dashed' : ''}`}>
-                <div className="w-2 h-2 bg-white rounded-full mx-auto mt-1"></div>
-              </div>
+              <RiCameraLensAiFill size={27}/>
             </button>
           </div>
         )}
         {(cameraActive || preview || selectedFile || capturedMedia) && (
-          <div className="absolute top-4 right-4 z-40 flex flex-col gap-2">
+          <div className="absolute top-6 right-6 z-40 flex flex-col gap-2">
             <button
-              onClick={() => handleZoomChange(zoomLevel + 0.2)}
-              className="w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white text-sm font-bold hover:bg-black/70 transition-colors"
+              onClick={() => handleZoomChange(zoomLevel + 1)}
+              className="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white text-sm font-bold hover:bg-gray-500 transition-colors"
               disabled={zoomLevel >= maxZoom}
             >
-              +
-            </button>
-            <div className="w-8 h-16 bg-black/50 rounded-full flex items-center justify-center">
-              <div 
-                className="w-1 h-12 bg-gray-300 rounded-full relative flex items-center"
-              >
-                <div
-                  className="absolute w-3 h-3 bg-white rounded-full"
-                  style={{
-                    top: `${((zoomLevel - 1) / (maxZoom - 1)) * 100}%`,
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)'
-                  }}
-                />
-              </div>
-            </div>
-            <button
-              onClick={() => handleZoomChange(zoomLevel - 0.2)}
-              className="w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white text-sm font-bold hover:bg-black/70 transition-colors"
-              disabled={zoomLevel <= 1}
-            >
-              −
+              <span>{zoomLevel}x</span>
             </button>
           </div>
         )}
@@ -507,19 +512,6 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
             {/* Horizontal lines */}
             <div className="absolute top-1/3 left-0 w-full h-px bg-white/20"></div>
             <div className="absolute top-2/3 left-0 w-full h-px bg-white/20"></div>
-          </div>
-        )}
-
-        {/* Enhanced Instructions */}
-        {cameraActive && !preview && !selectedFile && !capturedMedia && (
-          <div className="absolute bottom-4 left-4 right-4 z-30 text-center">
-            <div className="bg-black/60 text-white text-xs px-3 py-2 rounded-2xl inline-block backdrop-blur-sm">
-              <div className="flex items-center justify-center gap-4 text-center">
-                <span>📱 Pinch zoom</span>
-                <span>👆 Double tap reset</span>
-                <span>🎯 Tap focus</span>
-              </div>
-            </div>
           </div>
         )}
       </div>
