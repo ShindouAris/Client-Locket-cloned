@@ -112,7 +112,7 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
   // Handle zoom change
   const handleZoomChange = useCallback((newZoom) => {
     let clampedZoom = Math.min(Math.max(newZoom, 1), maxZoom);
-    if (clampedZoom == 4) {
+    if (clampedZoom >= 4) {
       clampedZoom = 1;
     }
     setZoomLevel(clampedZoom);
