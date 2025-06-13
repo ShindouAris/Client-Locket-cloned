@@ -360,7 +360,7 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
               className="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white text-sm font-bold hover:bg-gray-500 transition-colors"
               disabled={zoomLevel >= maxZoom}
             >
-              <span>{zoomLevel}x</span>
+              <span>{zoomLevel.toFixed(0)}x</span>
             </button>
           </div>
         )}
