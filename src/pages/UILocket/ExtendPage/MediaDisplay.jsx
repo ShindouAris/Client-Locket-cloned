@@ -110,9 +110,9 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
   }, [streamRef]);
 
   // Handle zoom change
-  const handleZoomChange = useCallback((newZoom) => {
+  const handleZoomChange = useCallback((newZoom, is_wheel= false) => {
     let clampedZoom = Math.min(Math.max(newZoom, 1), maxZoom);
-    if (clampedZoom >= 4) {
+    if (clampedZoom == 4 && !is_wheel) {
       clampedZoom = 1;
     }
     setZoomLevel(clampedZoom);
@@ -162,7 +162,7 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
-      handleZoomChange(zoomLevel + delta);
+      handleZoomChange(zoomLevel + delta, true);
     }
   };
 
