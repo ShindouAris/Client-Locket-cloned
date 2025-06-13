@@ -386,7 +386,7 @@ const MediaPreview = ({ loading, countdown, capturedMedia }) => {
               muted
               className={`
                 w-full h-full object-cover transition-all duration-300 ease-out
-                ${cameraActive ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+                ${cameraActive ? "opacity-100 scale-100 bg-sky-900" : "opacity-0 scale-95"}
               `}
               style={{
                 transform: `
