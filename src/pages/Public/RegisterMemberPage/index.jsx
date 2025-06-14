@@ -6,8 +6,10 @@ import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
 import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment, check_trial_ability, register_trial_plan } from "../../../services/LocketDioService/getInfoPlans";
 import { plans } from "../../../utils/plans";
-import { QRCodeSVG } from "qrcode.react";
 import { useLocation } from "react-router-dom";
+import { LuImageUp } from "react-icons/lu";
+import { FaRegClock } from "react-icons/fa";
+import { RiVideoUploadLine, RiHeart3Fill } from "react-icons/ri";
 
 const formatPrice = (price) =>
   price === 0 ? "Miễn phí" : `${price.toLocaleString()}đ`;
@@ -277,7 +279,7 @@ export default function RegisterMemberPage() {
   };
 
   return (
-    <div className="min-h-screen bg-pink-50 py-6 px-4">
+    <div className="min-h-screen py-6 px-4">
       <div className="h-16"></div>
       <h1 className="text-3xl font-bold text-center text-base-content">
         Đăng ký thành viên Locket Kanade
@@ -331,78 +333,70 @@ export default function RegisterMemberPage() {
       {/* 👉 Hiển thị gói hiện tại nếu có */}
       {userPlan && userPlan.plan_info ? (
         <>
-          <div className="max-w-2xl mx-auto bg-white border border-purple-200 p-6 rounded-3xl shadow-lg mb-4 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition hover:shadow-xl">
-            {/* Left side - Plan Perks */}
-            <div className="w-full sm:w-1/3 bg-purple-50 p-4 rounded-xl">
-              <h3 className="text-lg font-semibold text-purple-700 mb-3">Quyền lợi gói</h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🖼️</span>
-                  <span className="text-sm text-gray-700">
-                    Upload ảnh: <span className="font-medium">{userPlan.plan_info.max_image_size || 'Không giới hạn'} MB</span>
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🎥</span>
-                  <span className="text-sm text-gray-700">
-                    Upload video: <span className="font-medium">{userPlan.plan_info.max_video_size || 'Không giới hạn'} MB</span>
-                  </span>
-                </div>
-                {Object.entries(userPlan.plan_info.perks || {}).map(([perk, enabled], index) => (
-                  enabled && (
-                    <div key={index} className="flex items-center gap-2">
-                      <span className="text-xl">✨</span>
-                      <span className="text-sm text-gray-700">{perk}</span>
-                    </div>
-                  )
-                ))}
-              </div>
-            </div>
-
-            {/* Right side - User Info */}
-            <div className="flex-1 space-y-4 text-center sm:text-left">
-              {/* Header: Gói + Badge */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <h2 className="text-2xl font-bold text-purple-700">
-                  ✨ Gói hiện tại
-                </h2>
-                <span className="bg-purple-100 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full shadow-sm">
-                  {userPlan.plan_info.name}
-                </span>
+          <div className="card max-w-2xl mx-auto bg-base-100 shadow-xl mb-4">
+            <div className="card-body p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              {/* Left side - Plan Perks */}
+              <div className="w-full sm:w-1/3 bg-base-200 p-4 rounded-box">
+                <h3 className="text-lg font-semibold text-primary mb-3">Giới hạn gói</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <LuImageUp size={27} />
+                    <span className="text-sm">
+                      Upload ảnh: <span className="font-medium">{userPlan.plan_info.max_image_size || 'Không giới hạn'} MB</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RiVideoUploadLine size={27} />
+                    <span className="text-sm">
+                      Upload video: <span className="font-medium">{userPlan.plan_info.max_video_size || 'Không giới hạn'} MB</span>
+                    </span>
+                  </div>
+                </div>  
               </div>
 
-              {/* Grid Thông tin */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🙍‍♂️</span>
-                  <span className="font-medium text-gray-600">Tên:</span>
-                  <span className="text-gray-800">{user.displayName}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">💎</span>
-                  <span className="font-medium text-gray-600">Gói:</span>
-                  <span className="text-gray-800">
+              {/* Right side - User Info */}
+              <div className="flex-1 space-y-4 text-center sm:text-left">
+                {/* Header: Gói + Badge */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <h2 className="text-2xl font-bold text-primary flex items-center gap-2"><RiHeart3Fill size={25}/> Gói hiện tại</h2>
+                  <div className="badge badge-primary">
                     {userPlan.plan_info.name}
-                  </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">⏳</span>
-                  <span className="font-medium text-gray-600">Còn lại:</span>
-                  <span className="text-gray-800">
-                    {userPlan.end_date ? (
-                      (() => {
-                        const endDate = new Date(userPlan.end_date);
-                        const today = new Date();
-                        const diffTime = endDate - today;
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        return diffDays > 0 ? `${diffDays} ngày` : 'Hết hạn';
-                      })()
-                    ) : (
-                      'Vĩnh viễn'
-                    )}
-                  </span>
+                {/* Grid Thông tin */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🙍‍♂️</span>
+                    <span className="font-medium opacity-70">Tên:</span>
+                    <span>{user.displayName}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">💎</span>
+                    <span className="font-medium opacity-70">Gói:</span>
+                    <span>
+                      {userPlan.plan_info.name}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <FaRegClock size={23} />
+                    <span className="font-medium opacity-70">Còn lại:</span>
+                    <span>
+                      {userPlan.end_date ? (
+                        (() => {
+                          const endDate = new Date(userPlan.end_date);
+                          const today = new Date();
+                          const diffTime = endDate - today;
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                          return diffDays > 0 ? `${diffDays} ngày` : 'Hết hạn';
+                        })()
+                      ) : (
+                        'Vĩnh viễn'
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -410,11 +404,7 @@ export default function RegisterMemberPage() {
           <div className="text-center mt-4">
             <button
               onClick={handleRefreshPlan}
-              className={`inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white font-medium transition-all duration-300 transform hover:scale-105 ${
-                loading
-                  ? "bg-gray-400 cursor-wait"
-                  : "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 shadow-lg hover:shadow-xl"
-              }`}
+              className={`btn btn-primary gap-2 ${loading ? 'loading' : ''}`}
               disabled={loading}
             >
               {loading ? (
@@ -482,10 +472,10 @@ export default function RegisterMemberPage() {
             <div className="mt-4 space-y-2">
               {plan.has_trial_offer && trialEligible ? (
                 <button
-                  className={`w-full py-2 px-4 rounded-full text-white ${
+                  className={`btn w-full ${
                     trialLoading
-                      ? "bg-gray-400 cursor-wait"
-                      : "bg-emerald-800 hover:bg-sky-700"
+                      ? "btn-disabled"
+                      : "btn-success"
                   }`}
                   onClick={() => handleTrialRegistration(plan.id)}
                   disabled={trialLoading || userPlan?.plan_id === plan.id}
@@ -503,10 +493,10 @@ export default function RegisterMemberPage() {
                 </button>
               ) : (
                 <button
-                  className={`w-full py-2 px-4 rounded-full text-white ${
+                  className={`btn w-full ${
                     userPlan?.plan_id === plan.id
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-violet-900 hover:bg-cyan-900"
+                      ? "btn-disabled"
+                      : "btn-primary"
                   }`}
                   onClick={() => handleSelectPlan(plan.id, plan.name)}
                   disabled={userPlan?.plan_id === plan.id}

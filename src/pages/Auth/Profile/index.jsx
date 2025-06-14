@@ -1,49 +1,24 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthLocket";
 import LoadingRing from "../../../components/UI/Loading/ring";
-import * as locketService from "../../../services/locketService";
 import { getListIdFriends } from "../../../services/LocketDioService/FriendsServices";
 import * as utils from "../../../utils";
+import { RiHeart3Fill } from "react-icons/ri";
 import axios from "axios";
 
 export default function Profile() {
   const { user, setUser } = useContext(AuthContext);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const profilePictureSrc = user?.profilePicture || "/db.png";
   const [userinfo, setUserinfo] = useState({});
-
-  // const getListIdFriend = async (idToken, localId) => {
-  //   const allFriends = [];
-  //   let nextPageToken = null;
+  const {userPlan, setUserPlan} = useContext(AuthContext)
   
-  //   try {
-  //     do {
-  //       // console.log("🔁 Gọi API với pageToken:", nextPageToken);
   
-  //       const res = await axios.post(`http://localhost:5004/locket/get-incoming_friends`, {
-  //         idToken,
-  //         localId,
-  //         pageToken: nextPageToken, // Gửi pageToken nếu có
-  //       });
-  
-  //       const friends = res?.data?.data?.friendsList || [];
-  //       const cleanedFriends = friends.map(friend => ({
-  //         uid: friend.uid,
-  //         createdAt: friend.date,
-  //       }));
-  
-  //       allFriends.push(...cleanedFriends);
-  
-  //       nextPageToken = res?.data?.data?.nextPageToken;
-  //       // console.log("👉 nextPageToken sau lần gọi:", nextPageToken);
-  
-  //     } while (nextPageToken); // Vẫn tiếp tục nếu có token
-  
-  //     return allFriends;
-  //   } catch (err) {
-  //     console.error("❌ Lỗi khi gọi API get-friends:", err);
-  //     return [];
-  //   }
-  // };
+  useEffect(() => {
+    if (profilePictureSrc === "/db.png") {
+      setImageLoaded(true);
+    }
+  }, [profilePictureSrc]);
   
   useEffect(() => {
     const fetchFriends = async () => {
@@ -131,10 +106,6 @@ export default function Profile() {
         badge: "locket_gold",
         idToken,
         celebrity: true,
-        // additionalData: {
-        //   username: "Dio",
-        //   bio: "Developer",
-        // },
       });
       console.log("✅ Cập nhật thành công:", response.data);
     } catch (error) {
@@ -159,26 +130,31 @@ export default function Profile() {
       {/* Thông tin cơ bản */}
       <div className="flex flex-row items-center bg-base-100 border-base-300 text-base-content p-6 rounded-lg shadow-lg w-full max-w-2xl">
         <div className="avatar relative w-24 h-24  disable-select">
-          <div className=" rounded-full shadow-md outline-4 outline-amber-400 flex justify-items-center">
-            {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <LoadingRing size={40} stroke={2} color="blue" />
-              </div>
-            )}
-            <img
-              src={user?.profilePicture || "/default-avatar.png"}
-              alt="Profile"
-              className={`w-24 h-24 transition-opacity duration-300 ${
-                imageLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              onLoad={() => setImageLoaded(true)}
-            />
+        <div className="rounded-full shadow-md outline-4 outline-amber-400 flex justify-items-center relative">
+        {!imageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-base-200/50 backdrop-blur-sm rounded-full">
+            <LoadingRing size={40} stroke={2} color="blue" />
           </div>
+        )}
+        <img
+          src={profilePictureSrc}
+          alt="Profile"
+          className={`w-24 h-24 rounded-full object-cover transition-opacity duration-300 ${
+            imageLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          onLoad={() => setImageLoaded(true)}
+        />
+      </div>
+        {userPlan.plan_id.includes(("premium", "pro_plus")) && (
+          <div className="absolute bottom-0 right-0 bg-white rounded-full p-1">
+            <RiHeart3Fill size={20} style={{color: 'pink', fontSize: '20px'}} />
+          </div>
+        )}
         </div>
         <div className="flex flex-col pl-5 text-center items-start space-y-1">
           <h2 className="text-2xl font-semibold">
             {user?.displayName}
-          </h2>
+          </h2> 
           <p className="font-semibold">{user?.email || "Không có email"}</p>
           <a  
             href={`https://locket.cam/${user?.username}`}
@@ -189,6 +165,7 @@ export default function Profile() {
             https://locket.cam/{user?.username}
           </a>
         </div>
+        
       </div>
 
       {/* Thông tin tài khoản chi tiết */}
