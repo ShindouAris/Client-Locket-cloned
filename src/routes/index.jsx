@@ -14,19 +14,19 @@ import Timeline from "../pages/Public/Timeline";
 import CameraCapture from "../pages/UILocket";
 import NodeInfo from "../pages/Auth/Nodeinfo";
 
-const APP_NAME = "Locket Pro - Đăng ảnh & Video lên Locket";
+const APP_NAME = "Locket Kanade - Đăng ảnh & Video lên Locket";
 
 // 📌 Các route dành cho người chưa đăng nhập
 const publicRoutes = [
   { path: "/", component: Home, title: `${APP_NAME} | Trang Chủ` },
   { path: "/test", component: AuthHome, title: `${APP_NAME} | Test` },
   { path: "/login", component: Login, title: `${APP_NAME} | Đăng Nhập` },
-  { path: "/about", component: AboutLocketDio, title: `${APP_NAME} | Về Website Locket Dio` },
+  { path: "/about", component: AboutLocketDio, title: `${APP_NAME} | Về Website Locket Kanade` },
   { path: "/about-me", component: AboutMe, title: `${APP_NAME} | Về tôi` },
   { path: "/timeline", component: Timeline, title: `${APP_NAME} | Dòng Thời Gian` },
   { path: "/docs", component: Docs, title: `${APP_NAME} | Docs` },
   // { path: "/conta", component: Contact, title: `${APP_NAME} | Liên hệ` },
-  { path: "/privacy", component: PrivacyPolicy, title: `${APP_NAME} | Privacy Policy for LocketDio - PrivacyPolicies.com` },
+  { path: "/privacy", component: PrivacyPolicy, title: `${APP_NAME} | Privacy Policy for LocketKanade - PrivacyPolicies.com` },
   { path: "/testv1", component: CameraCapture, title: `${APP_NAME} | Test` },
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
