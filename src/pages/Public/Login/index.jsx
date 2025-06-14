@@ -22,10 +22,24 @@ const Login = () => {
 
   const { useloading } = useApp();
   const { isStatusServer, isLoginLoading, setIsLoginLoading } = useloading;
-  
-  // Check if using custom backend
-  const [isTurnstileEnabled, setIsTurnstileEnabled] = useState(!isUsingCustomBackend());
 
+  
+  const isEnableTurnstile = () => {
+    if (isUsingCustomBackend) {
+      return false; 
+    }
+    return import.meta.env.DISABLE_TURNSTILE !== "true";
+  };
+
+  // Check if using custom backend
+  const [isTurnstileEnabled, setIsTurnstileEnabled] = useState(true);
+
+  useEffect(() => {
+    if (isEnableTurnstile()) {
+      setIsTurnstileEnabled(true)
+    }
+  }, [])
+  
   useEffect(() => {
     if (rememberMe) {
       localStorage.setItem("rememberMe", "true");
